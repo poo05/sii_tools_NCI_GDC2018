@@ -85,6 +85,24 @@ public class CProcessCohort {
 					JSONArray jsonary =  new JSONObject(jsonFile).getJSONArray("root");
 					_processDataType(jsonary, curCohort, curCmdMap, curjustfilename, "general.sample,mirna.std", "mirna.std", "mirna");
 				}
+				// cnv
+				if(curfile.startsWith("cnv_metadata")) {
+					String curjustfilename = curfile;
+					curfile = curCmdMap.walk==1?curCmdMap.inputFolder+"/"+curCohort+"/"+curfile:curCmdMap.inputFolder+"/"+curfile;
+					String jsonFile = filehandler.readFile(curfile);
+					jsonFile = "{\"root\":"+jsonFile+"}";	// deal with vagaries of NCI starting with an array instead of a JSON object
+					JSONArray jsonary =  new JSONObject(jsonFile).getJSONArray("root");
+					_processDataType(jsonary, curCohort, curCmdMap, curjustfilename, "general.sample,cnv.std", "cnv.std", "cnv");
+				}
+				// snp
+				if(curfile.startsWith("snp_metadata")) {
+					String curjustfilename = curfile;
+					curfile = curCmdMap.walk==1?curCmdMap.inputFolder+"/"+curCohort+"/"+curfile:curCmdMap.inputFolder+"/"+curfile;
+					String jsonFile = filehandler.readFile(curfile);
+					jsonFile = "{\"root\":"+jsonFile+"}";	// deal with vagaries of NCI starting with an array instead of a JSON object
+					JSONArray jsonary =  new JSONObject(jsonFile).getJSONArray("root");
+					_processDataType(jsonary, curCohort, curCmdMap, curjustfilename, "general.sample,snp.std", "snp.std", "snp");
+				}
 				
 			}
 			// process CNV
@@ -104,6 +122,15 @@ public class CProcessCohort {
 		BufferedWriter buffwrite = filehandler.openFileForWrite(outputFile, true,  false);
 		filehandler.writeLineToBufferedWriter(buffwrite, header, false);
 		
+		String skipLine = "";
+		COutputTemplates coutt = new COutputTemplates();
+
+		// if we are in a line-skip for this type, then skip the line and go to the next
+		if(coutt.skiplineTemplate.containsKey(dataTypeLine)) {
+			skipLine = coutt.skiplineTemplate.get(dataTypeLine);
+		}
+		
+		
 		// process records
 		for(int i=0;i<jsonary.length();i++){
 			JSONObject curobj = (JSONObject) jsonary.getJSONObject(i);
@@ -119,10 +146,15 @@ public class CProcessCohort {
 						// remember that we are passing fileOut to itself on calls other than the first - so do NOT use +=
 						String lineOut =_getOutputLine(br.filename+"|"+curFile, curCohort, curAssembly, outputFileType, ae.getString("entity_submitter_id"),ae.getString("entity_submitter_id"), ae, dataTypeLine,"", false);
 						String ln = filehandler.readLineFromBufferedReader(br.buffread, false);
+						// are we supposed to skip any lines for this type? - we only process if skipLine=="" OR skipLine!="" but the line doesn't start with skipLine value
+						while(skipLine!="" && (ln.substring(0, skipLine.length()).equals(skipLine))){
+							ln = filehandler.readLineFromBufferedReader(br.buffread, false);
+							if (curCmdMap.debug){System.out.println("Skipping line with: "+skipLine );}
+						}
 						// we want to dynamically check if the first line is a header line or not
 						//  we add a header to the output data - in the outputTemplate
 						//  so IF the first value for the given datatype = the first value in our retreived line, then it's a header line and we just skip
-						if ( ln.split("\\\t")[0].equals(new COutputTemplates().outputTemplate.get(dataTypeLine).split(",")[0])) {
+						if ( (ln.split("\\\t")[0].equals(coutt.outputTemplate.get(dataTypeLine).split(",")[0])) || (ln.split("\\\t")[0].equals("#"+coutt.outputTemplate.get(dataTypeLine).split(",")[0]))) {
 							ln = filehandler.readLineFromBufferedReader(br.buffread, false);
 						}
 						while(ln!=null && ln!=""){
@@ -133,6 +165,11 @@ public class CProcessCohort {
 									ln = correctedLn[0].split("\\.")[0]+"\t"+correctedLn[0].split("\\.")[1]+"\t"+ correctedLn[1];
 									break;
 								case "miRNA":	// nothing special - direct copy
+									break;
+								case "cnv":	// nothing special - direct copy
+									break;
+								case "snp": // we have to process out
+									
 									break;
 								default:
 									break;
