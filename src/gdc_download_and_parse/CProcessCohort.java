@@ -103,6 +103,15 @@ public class CProcessCohort {
 					JSONArray jsonary =  new JSONObject(jsonFile).getJSONArray("root");
 					_processDataType(jsonary, curCohort, curCmdMap, curjustfilename, "general.sample,snp.std", "snp.std", "snp");
 				}
+				// somsnp
+				if(curfile.startsWith("somsnp_metadata")) {
+					String curjustfilename = curfile;
+					curfile = curCmdMap.walk==1?curCmdMap.inputFolder+"/"+curCohort+"/"+curfile:curCmdMap.inputFolder+"/"+curfile;
+					String jsonFile = filehandler.readFile(curfile);
+					jsonFile = "{\"root\":"+jsonFile+"}";	// deal with vagaries of NCI starting with an array instead of a JSON object
+					JSONArray jsonary =  new JSONObject(jsonFile).getJSONArray("root");
+					_processDataType(jsonary, curCohort, curCmdMap, curjustfilename, "general.sample,somsnp.std", "somsnp.std", "somsnp");
+				}
 				
 			}
 			// process CNV
@@ -159,16 +168,26 @@ public class CProcessCohort {
 						}
 						while(ln!=null && ln!=""){
 							// handle any specifics by datatype
+							String[] correctedLn;
 							switch(outputFileType) {
 								case "gene_expr": // need ensg by itself AND with version (without .x and just .x)
-									String[] correctedLn = ln.split("\t");
+									correctedLn = ln.split("\t");
 									ln = correctedLn[0].split("\\.")[0]+"\t"+correctedLn[0].split("\\.")[1]+"\t"+ correctedLn[1];
 									break;
 								case "miRNA":	// nothing special - direct copy
 									break;
 								case "cnv":	// nothing special - direct copy
 									break;
-								case "snp": // we have to process out
+								case "somsnp": // we have to process out
+									// Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|
+									correctedLn = ln.split("\t");
+									// position 7 is the info field
+									// so we want to split into the above items
+									String[] ns = correctedLn[7].split("\\|");
+									String n = ns[0] + "\t" + ns[1] + "\t" + ns[2] + "\t" + ns[3] + "\t" + ns[4] + "\t" + ns[5] + "\t" + ns[6] + "\t" + ns[7] + "\t" + ns[8]; 
+									
+									ln = correctedLn[0] + "\t" + correctedLn[1] +"\t" + correctedLn[2] +"\t" + correctedLn[3] +"\t" + correctedLn[4] +"\t" + correctedLn[5] +"\t"+
+											correctedLn[6] +"\t" + n +"\t" + correctedLn[8] +"\t" + correctedLn[9] +"\t" + correctedLn[10];      
 									
 									break;
 								default:

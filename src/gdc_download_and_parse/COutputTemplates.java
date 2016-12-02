@@ -39,9 +39,11 @@ public class COutputTemplates {
 		outputTemplate.put("mirna.std", "miRNA_ID,read_count,reads_per_million_miRNA_mapped,cross-mapped");
 		outputTemplate.put("gene_expr.std", "ensg_id,ensg_id_ver,fpkm_norm_by_genelength");
 		outputTemplate.put("cnv.std", "Sample,Chromosome,Start,End,Num_Probes,Segment_Mean");
-		outputTemplate.put("snp.std", "CHROM,POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,NORMAL,TUMOR");
+
+		outputTemplate.put("somsnp.std", "CHROM,POS,ID,REF,ALT,QUAL,FILTER,Allele,Consequence,IMPACT,SYMBOL,Gene,Feature_type,Feature,BIOTYPE,EXON,FORMAT,NORMAL,TUMOR");
 		
 		skiplineTemplate.put("snp.std", "##");
+		skiplineTemplate.put("somsnp.std", "##");
 	}
 	
 }

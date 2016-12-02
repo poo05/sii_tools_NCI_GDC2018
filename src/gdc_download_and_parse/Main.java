@@ -26,8 +26,7 @@ public class Main {
 				.parm("-walk","0")
 				.parm("-assembly","hg38")
 				.parm("-log","1")
-//				.parm("-filenames","clinical=clinical.tsv;mirna=mirna.tsv;gene_expr=gene_expr.tsv;cnv=cnv.tsv;snp=snp.vcf")
-				.parm("-filenames","clinical=clinical.tsv;snp=snp.vcf")
+				.parm("-filenames","clinical=clinical.tsv;mirna=mirna.tsv;gene_expr=gene_expr.tsv;cnv=cnv.tsv;snp=snp.tsv;somsnp=somsnp.tsv")
 				.parm("-debug","0")
 				.build();
 		Map<String,String> cmdMap = new HashMap<String,String>();
