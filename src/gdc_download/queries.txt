@@ -1,0 +1,18 @@
+cases.project.project_id in [#CANCER] and files.access in ["open"] and 
+(
+
+(files.data_category in ["Simple Nucleotide Variation"] and files.analysis.workflow_type in ["MuTect2 Variant Aggregation and Masking"]) 
+or
+
+(files.data_category in ["Copy Number Variation"] and files.data_type in ["Copy Number Segment"])
+or
+
+(files.data_type in ["Gene Expression Quantification"] and files.analysis.workflow_type in ["HTSeq - FPKM"] and files.access in ["open"])
+or
+
+(files.data_type in ["miRNA Expression Quantification"] and files.experimental_strategy in ["miRNA-Seq"])
+or
+
+(files.data_category in ["DNA Methylation"])
+
+)
