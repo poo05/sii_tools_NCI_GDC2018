@@ -2,7 +2,7 @@
 """
 Created on Mon Dec 19 16:23:18 2016
 
-@author: localadmin
+@author: Eric Ye
 """
 
 # -*- coding: utf-8 -*-
@@ -13,7 +13,10 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoAlertPresentException
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+import urllib
 import shutil2
+import subprocess
+import os
 
 
 
@@ -22,7 +25,7 @@ binary = FirefoxBinary('C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe')
 
 driver = webdriver.Firefox(firefox_binary=binary)
 driver.implicitly_wait(30)
-base_url = "https://gdc-portal.nci.nih.gov/"
+base_url = "https://gdc-portal.nci.nih.gov"
 
 with open('cancers.txt','r') as f:
     cancers = []
@@ -31,24 +34,34 @@ with open('cancers.txt','r') as f:
         if splLine != '': 
             cancers.append()
 
-queries = []             
+queries = ['(cases.project.project_id in [#CANCER] and files.access in ["open"])',
+           '(files.data_category in ["Simple Nucleotide Variation"] and files.analysis.workflow_type in ["MuTect2 Variant Aggregation and Masking"])',
+           '(files.data_category in ["Copy Number Variation"] and files.data_type in ["Copy Number Segment"])',
+           '(files.data_type in ["Gene Expression Quantification"] and files.analysis.workflow_type in ["HTSeq - FPKM"] and files.access in ["open"])',
+           '(files.data_type in ["miRNA Expression Quantification"] and files.experimental_strategy in ["miRNA-Seq"])',
+           '(files.data_category in ["DNA Methylation"])'
+           ]             
             
 for cancer in cancers:
-    driver.get(base_url + "/query/s?query=cases.project.project_id\%20in\%20\%5B"+
-               cancer + "\%5D\%20and\%20files.access\%20in\%20\%5B\%22open\%22\%5D\%20and\%20\%0A"+
-               "(\%0A\%0A(files.data_category\%20in\%20\%5B\%22Simple\%20Nucleotide\%20Variation\%22\%5D\%20and\%20files.analysis.workflow_type\%20in\%20\%5B\%22MuTect2\%20Variant\%20Aggregation\%20and\%20Masking\%22\%5D)"+
-               "\%20\%0Aor\%0A\%0A"+"(files.data_category\%20in\%20\%5B\%22Copy\%20Number\%20Variation\%22\%5D\%20and\%20files.data_type\%20in\%20\%5B\%22Copy\%20Number\%20Segment\%22\%5D)"+
-               "\%0Aor\%0A\%0A"+"(files.data_type\%20in\%20\%5B\%22Gene\%20Expression\%20Quantification\%22\%5D\%20and\%20files.analysis.workflow_type\%20in\%20\%5B\%22HTSeq\%20-\%20FPKM\%22\%5D\%20and\%20files.access\%20in\%20\%5B\%22open\%22\%5D)"+
-               "\%0Aor\%0A\%0A"+"(files.data_type\%20in\%20\%5B\%22miRNA\%20Expression\%20Quantification\%22\%5D\%20and\%20files.experimental_strategy\%20in\%20\%5B\%22miRNA-Seq\%22\%5D)"+
-               "\%0Aor\%0A\%0A"+"(files.data_category\%20in\%20\%5B\%22DNA\%20Methylation\%22\%5D)\%0A\%0A)&filters=\%7B\%22op\%22:\%22and\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22and\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22cases.project.project_id\%22,\%22value\%22:\%5B\%22TCGA-BRCA\%22\%5D\%7D\%7D,\%7B\%22op\%22:\%22and\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.access\%22,\%22value\%22:\%5B\%22open\%22\%5D\%7D\%7D,\%7B\%22op\%22:\%22or\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22and\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.data_category\%22,\%22value\%22:\%5B\%22Simple\%20Nucleotide\%20Variation\%22\%5D\%7D\%7D,\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.analysis.workflow_type\%22,\%22value\%22:\%5B\%22MuTect2\%20Variant\%20Aggregation\%20and\%20Masking\%22\%5D\%7D\%7D\%5D\%7D,\%7B\%22op\%22:\%22or\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22and\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.data_category\%22,\%22value\%22:\%5B\%22Copy\%20Number\%20Variation\%22\%5D\%7D\%7D,\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.data_type\%22,\%22value\%22:\%5B\%22Copy\%20Number\%20Segment\%22\%5D\%7D\%7D\%5D\%7D,\%7B\%22op\%22:\%22or\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22and\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.data_type\%22,\%22value\%22:\%5B\%22Gene\%20Expression\%20Quantification\%22\%5D\%7D\%7D,\%7B\%22op\%22:\%22and\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.analysis.workflow_type\%22,\%22value\%22:\%5B\%22HTSeq\%20-\%20FPKM\%22\%5D\%7D\%7D,\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.access\%22,\%22value\%22:\%5B\%22open\%22\%5D\%7D\%7D\%5D\%7D\%5D\%7D,\%7B\%22op\%22:\%22or\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22and\%22,\%22content\%22:\%5B\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.data_type\%22,\%22value\%22:\%5B\%22miRNA\%20Expression\%20Quantification\%22\%5D\%7D\%7D,\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.experimental_strategy\%22,\%22value\%22:\%5B\%22miRNA-Seq\%22\%5D\%7D\%7D\%5D\%7D,\%7B\%22op\%22:\%22in\%22,\%22content\%22:\%7B\%22field\%22:\%22files.data_category\%22,\%22value\%22:\%5B\%22DNA\%20Methylation\%22\%5D\%7D\%7D\%5D\%7D\%5D\%7D\%5D\%7D\%5D\%7D\%5D\%7D\%5D\%7D\%5D\%7D")
+    driver.get(base_url + '/query/s?query=' + 
+               urllib.quote(
+                                queries[0] + ' and (' + queries[1] + ' or ' + 
+                                queries[2]+' or '+queries[3]+' or ' + 
+                                queries[4] + ' or ' + queries[5] +')'
+                                )
+                )
     driver.find_element_by_css_selector("span.ng-binding.ng-scope").click()
-    for ftype in type: 
+    for ftype in queries[1:]:
+        driver.get(base_url + '/query/s?query=' + urllib.quote(queries[0] + ' and (' + ftype +')'))
         driver.find_element_by_id("add-to-cart-button").click()
         driver.find_element_by_css_selector("i.fa.fa-shopping-cart").click()
         driver.find_element_by_xpath("//div[@id='skip']/div/section[2]/div/div/button").click()
         driver.find_element_by_css_selector("#split-control-1482191843912 > span > span.ng-binding.ng-scope").click()
         driver.find_element_by_id("clear-button").click()
-
+        
+    file_names = [filenames for (a, b, filenames) in os.walk(downloadDir)]
+    
+    subprocess.call()   
 
 
 
