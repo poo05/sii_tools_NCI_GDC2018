@@ -122,16 +122,18 @@ def comp_time(downDir):
             tdic[a] = i
     fdic = collections.OrderedDict(sorted(tdic.items()))
     sortVals = fdic.values()
-    assert len(sortVals) <=5
+    assert (len(sortVals) <=5)
     if len(sortVals)!= 5:
         comp_time(downDir)
         
 
 def getManifest(downDir):
     flist = os.listdir(downDir)
-    for i in flist:
-        if i[-4:] == '.tsv':
-            return i
-    
-    return manifest(downDir)
-    
+    while True:
+        check = False
+        for i in flist:
+            if i[-4:] == '.tsv':
+                return i
+            if i[:12] == 'gdc_manifest':
+                check = True
+        assert (check)
