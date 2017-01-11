@@ -8,11 +8,11 @@ Python Package: Anaconda with Python 3.5.2
 
 ### Dependencies: ###
 #### Selenium ####
-Download and use pip to install Selenium.
+>> Download and use pip to install Selenium.
 #### Gecko Driver ####
-Need to download at [https://github.com/mozilla/geckodriver](https://github.com/mozilla/geckodriver "Title") and place in python path.
+>> Need to download at [https://github.com/mozilla/geckodriver](https://github.com/mozilla/geckodriver "Title") and place in python path.
 #### Firefox ####
-Need to download the latest Firefox
+>> Need to download the latest Firefox
 
 Sources:
 [http://www.seleniumhq.org](http://www.seleniumhq.org/ "Title")
