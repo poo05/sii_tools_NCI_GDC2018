@@ -4,31 +4,32 @@ Created on Mon Dec 19 16:23:18 2016
 @author: Eric Ye
 """
 
-# -*- coding: utf-8 -*-
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-import urllib
-import subprocess
+import collections
+import getopt
 import os
 import re
-import threading
-import queue
-from datetime import datetime
 import shutil
-import collections
-import sys,getopt
- 
-def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC', gdc_path='', 
-           mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'
-           ):
-    
-    try: 
-    
+import subprocess
+import sys
+import threading
+import urllib
+from datetime import datetime
+
+import queue
+from selenium import webdriver
+from selenium.common.exceptions import (NoAlertPresentException,
+                                        NoSuchElementException)
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.support.ui import Select
+
+def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC',
+    gdc_path=True,
+    mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'):
+    try:
+        if gdc_path == True:
+            gdc_path == downloadDir 
         binary = FirefoxBinary(mozillaPath)
         
         driver = webdriver.Firefox(firefox_binary=binary)
@@ -94,10 +95,11 @@ def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC', gdc_p
             driver.implicitly_wait(1)
             #Click clear all items in cart
             driver.find_element_by_id("clear-button").click()
-        # get the manifest file 
-        manifest = getManifest(downloadDir) 
+        # get the manifest file
+        manifest = getManifest(downloadDir)
         # Run the gdc-client with the manifest
-        subprocess.call([gdc_path+'/gdc-client', 'download','-d', dest+'/'+cancer_name,'--no-segment-md5sums','--no-related-files','--no-annotations', '-m', manifest])   
+        subprocess.call([gdc_path+'/gdc-client', 'download','-d', dest+'/'+cancer_name,
+            '--no-segment-md5sums','--no-related-files','--no-annotations', '-m', manifest])
         os.remove(manifest)
         fileSort = comp_time(downloadDir)
         for meta,prefix in zip(fileSort,qName):
@@ -153,9 +155,10 @@ def multithread(cancers_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt',
                 cancers.append(line)
     thread_q = queue.Queue()                
     for cancer in cancers:
-        t = threading.Thread(target=download_cancer, args=(cancer,download_dir))
-        thread_q.put(t)
+        t = threading.Thread(target=download_cancer, args=(thread_q,cancer,download_dir))
         t.start()
+        thread_q.put(t)
+        
 
 
 def main():        

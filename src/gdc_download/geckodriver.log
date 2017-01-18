@@ -1,0 +1,7 @@
+1484779292960	geckodriver	INFO	Listening on 127.0.0.1:49994
+1484779295534	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.tXKeItRZydc3
+1484779295540	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484779295690	geckodriver::marionette	INFO	Connecting to Marionette on localhost:50255
+1484779309106	Marionette	INFO	Listening on port 50235
+[GFX1-]: Failed to create a content image bridge d[Child 22504] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 21808] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
