@@ -151,11 +151,12 @@ def multithread(cancers_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt',
             cancers = []
             for line in f:
                 cancers.append(line)
-    thread_q = queue.Queue(4)                
+    thread_q = queue.Queue()                
     for cancer in cancers:
         t = threading.Thread(target=download_cancer, args=(cancer,download_dir))
-        t.start()
         thread_q.put(t)
+        t.start()
+
 
 def main():        
     cancer_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt'
@@ -164,7 +165,7 @@ def main():
     gdc_path='C:\\Users\\localadmin\\Downloads'
     mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"hg",["help","c_dir=","dest=","g_path=","m_path=", "d_dir="])
+        opts, args = getopt.getopt(sys.argv[1:],"hgd",["help","c_dir=","dest=","g_path=","m_path=", "d_dir="])
     except getopt.GetoptError:
         print( 'downloadManifests.py -g --c_dir <directory of cancer list> '
               +'--dest <directory to save the files>'+
@@ -175,6 +176,8 @@ def main():
             print( 'downloadManifests.py -g --c_dir <directory of cancer list> '
               +'--dest <directory to save the files>'+
               ' --g_path <path of the gdc-client> --m_path <path of lastest mozilla browser>')
+        elif o == "-d":
+            break
         elif o == "--c_dir":
             cancer_dir = a
         elif o == "--dest":
