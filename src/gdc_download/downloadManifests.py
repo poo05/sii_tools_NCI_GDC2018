@@ -24,7 +24,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
 
-def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC',
+def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
     gdc_path=True,
     mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'):
     try:
@@ -35,7 +35,8 @@ def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC',
         driver = webdriver.Firefox(firefox_binary=binary)
         driver.implicitly_wait(30)
         base_url = "https://gdc-portal.nci.nih.gov"
-        cancer_search = re.match('+-(.+)',cancer)
+        print(cancer)
+        cancer_search = re.match('.+-(.+)',cancer)
         cancer_name = cancer_search.group(1)
         
         
@@ -48,20 +49,15 @@ def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC',
                 ]             
         qName = ['snv','cnv','gene_expr','mirna','meth']
             
-        
-        #Create a folder in the destination to store the results
-        os.mkdir(dest+'/'+cancer_name)
+        if os.path.exists(dest+'/'+cancer_name) != True:
+            #Create a folder in the destination to store the results
+            os.mkdir(dest+'/'+cancer_name)
         #Base of the search string with the project name integrated
         qString = queryS[0]+ cancer +queryS[1]
         
-        #Go to website
-        driver.get(base_url + '/query/s?query=' + 
-                   urllib.quote(
-                                    qString + ' and (' + queries[0] + ' or ' + 
-                                    queries[1]+' or '+queries[2]+' or ' + 
-                                    queries[3] + ' or ' + queries[4] +')'
-                                    )
-                    )
+        website = base_url + '/query/s?query=' + urllib.parse.quote(qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')')        #Go to website
+        driver.get(website)
+        
         #Click on the banner that says that the site is a gov't website
         driver.find_element_by_css_selector("button.btn.btn-primary").click()
         #wait 10s for page to load
@@ -74,7 +70,7 @@ def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC',
         driver.find_element_by_css_selector("span.ng-binding.ng-scope").click()
         for ftype in queries:
             #Go to website
-            driver.get(base_url + '/query/s?query=' + urllib.quote(qString + ' and (' + ftype +')'))
+            driver.get(base_url + '/query/s?query=' + urllib.parse.quote(qString + ' and (' + ftype +')'))
             #wait 10s for page to load
             driver.implicitly_wait(10)
             #Click search query
@@ -147,24 +143,25 @@ def getManifest(downDir):
 
 def multithread(cancers_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt',
                 download_dir = 'C:\\Users\\localadmin\\Downloads',
-                dest='\\\\sii-nas3/Data/NCI-GDC', gdc_path='C:\\Users\\localadmin\\Downloads', 
+                dest='//sii-nas3/Data/NCI_GDC', gdc_path='C:\\Users\\localadmin\\Downloads', 
                 mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'):
     with open(cancers_dir,'r') as f:
             cancers = []
             for line in f:
                 cancers.append(line)
-    thread_q = queue.Queue(4)                
+    thread_q = queue.Queue(1)                
     for cancer in cancers:
         t = threading.Thread(target=download_cancer, args=(thread_q,cancer,download_dir))
-        t.start()
         thread_q.put(t)
+        t.start()
+
         
 
 
 def main():        
     cancer_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt'
     download_dir = 'C:\\Users\\localadmin\\Downloads'
-    dest='\\\\sii-nas3/Data/NCI-GDC'
+    dest='//sii-nas3/Data/NCI_GDC'
     gdc_path='C:\\Users\\localadmin\\Downloads'
     mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'
     try:
