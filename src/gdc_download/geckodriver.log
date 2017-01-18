@@ -66,10 +66,67 @@ C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.5oAdku2nvZ6X
 1484781487173	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
 1484781487423	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54270
 1484781488628	Marionette	INFO	Listening on port 54270
-1484781656431	geckodriver	INFO	Listening on 127.0.0.1:54337
-1484781658432	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.X6KZ2AoSji9N
+JavaScript warning: https://cdn.adsafeprotected.com/sca.17.1.7.js, line 1: SyntaxError: for-in loop head declarations may not have initializers
+ocal\Temp\rust_mozprofile.X6KZ2AoSji9N
 1484781658433	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
 1484781658453	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54345
 1484781659572	Marionette	INFO	Listening on port 54345
 JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
 [Child 14520] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1484781793978	geckodriver	INFO	Listening on 127.0.0.1:54404
+1484781795974	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.A2J00E7jhKvY
+1484781795975	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484781795994	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54410
+1484781797133	Marionette	INFO	Listening on port 54410
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+1484782212816	geckodriver	INFO	Listening on 127.0.0.1:54704
+1484782214810	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.tGgtT6S6AdZD
+1484782214812	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484782214830	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54712
+1484782215927	Marionette	INFO	Listening on port 54712
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+*************************
+A coding exception was thrown and uncaught in a Task.
+
+Full message: TypeError: can't access dead object
+Full stack: find_@chrome://marionette/content/element.js:279:7
+element.find/</findElements<@chrome://marionette/content/element.js:250:15
+implicitlyWaitFor/</elementSearch@chrome://marionette/content/element.js:576:15
+
+*************************
+*************************
+A coding exception was thrown and uncaught in a Task.
+
+Full message: TypeError: can't access dead object
+Full stack: find_@chrome://marionette/content/element.js:279:7
+element.find/</findElements<@chrome://marionette/content/element.js:250:15
+implicitlyWaitFor/</elementSearch@chrome://marionette/content/element.js:576:15
+
+*************************
+Marionette threw an error: [Exception... "Component returned failure code: 0x80070057 (NS_ERROR_ILLEGAL_VALUE) [nsIMessageSender.sendAsyncMessage]"  nsresult: "0x80070057 (NS_ERROR_ILLEGAL_VALUE)"  location: "JS frame :: chrome://marionette/content/proxy.js :: sendReply_ :: line 187"  data: no]
+sendReply_@chrome://marionette/content/proxy.js:187:5
+reply@chrome://marionette/content/proxy.js:176:7
+sendToServer@chrome://marionette/content/listener.js:430:3
+sendError@chrome://marionette/content/listener.js:464:3
+dispatch/</<@chrome://marionette/content/listener.js:201:40
+Handler.prototype.process@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:940:21
+this.PromiseWalker.walkerLoop@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:816:7
+this.PromiseWalker.scheduleWalkerLoop/<@resource://gre/modules/Promise.jsm -> resource://gre/modules/Promise-backend.js:750:11
+
+1484782395503	geckodriver	INFO	Listening on 127.0.0.1:54786
+1484782397496	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.FCvlGjmkAr2H
+1484782397498	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484782397520	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54792
+1484782398779	Marionette	INFO	Listening on port 54792
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+1484782787129	geckodriver	INFO	Listening on 127.0.0.1:54939
+1484782789119	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.MQjeXHZWGiY4
+1484782789121	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484782789138	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54945
+1484782790393	Marionette	INFO	Listening on port 54945
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement

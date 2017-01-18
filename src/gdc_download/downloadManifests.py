@@ -12,6 +12,7 @@ import shutil
 import subprocess
 import sys
 import threading
+import time
 import urllib
 from datetime import datetime
 
@@ -24,6 +25,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
 
+
 def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
     gdc_path=True,
     mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'):
@@ -33,7 +35,6 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         binary = FirefoxBinary(mozillaPath)
         
         driver = webdriver.Firefox(firefox_binary=binary)
-        driver.implicitly_wait(30)
         base_url = "https://gdc-portal.nci.nih.gov"
         print(cancer)
         cancer_search = re.match('.+-(.+)',cancer)
@@ -52,12 +53,13 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         if os.path.exists(dest+'/'+cancer_name) != True:
             #Create a folder in the destination to store the results
             os.mkdir(dest+'/'+cancer_name)
+
         #Base of the search string with the project name integrated
         qString = queryS[0]+ cancer +queryS[1]
-        
+        driver.maximize_window()
         website = base_url + '/query/s?query=' + urllib.parse.quote(qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')')        #Go to website
         driver.get(website)
-        
+        driver.implicitly_wait(60)
         #Click on the banner that says that the site is a gov't website
         driver.find_element_by_css_selector("button.btn.btn-primary").click()
         #wait 10s for page to load
@@ -83,12 +85,15 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
             driver.find_element_by_css_selector("i.fa.fa-shopping-cart").click()
             #wait 60s for page to load
             driver.implicitly_wait(60)
+            
             #Click on Download Metadata
             driver.find_element_by_xpath("//div[@id='skip']/div/section[2]/div/div/button").click()
+            #Wait 5s for button to appear
+            driver.implicitly_wait(5)
             #Click clear cart
             driver.find_element_by_css_selector("#split-control-1482191843912 > span > span.ng-binding.ng-scope").click()
-            #Wait 1s for button to appear
-            driver.implicitly_wait(1)
+            #Wait 5s for button to appear
+            driver.implicitly_wait(5)
             #Click clear all items in cart
             driver.find_element_by_id("clear-button").click()
         # get the manifest file
@@ -100,7 +105,11 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         fileSort = comp_time(downloadDir)
         for meta,prefix in zip(fileSort,qName):
             shutil.move(downloadDir+'/'+meta, dest+'/'+ prefix+'_'+cancer_name+'.json')
+    except:
+        print("Error!")
     finally:
+        print(cancer_name)
+        driver.quit()
         q.task_done()
 
     
@@ -129,8 +138,8 @@ def comp_time(downDir):
         
 
 def getManifest(downDir):
-    flist = os.listdir(downDir)
     while True:
+        flist = os.listdir(downDir)
         check = False
         for i in flist:
             if i[-4:] == '.tsv':
@@ -139,6 +148,7 @@ def getManifest(downDir):
             if i[:12] == 'gdc_manifest':
                 check = True
         assert (check)
+        time.sleep(10)
 
 
 def multithread(cancers_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt',
@@ -154,6 +164,7 @@ def multithread(cancers_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt',
         t = threading.Thread(target=download_cancer, args=(thread_q,cancer,download_dir))
         thread_q.put(t)
         t.start()
+        thread_q.get(t)
 
         
 
