@@ -153,7 +153,7 @@ def multithread(cancers_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt',
             cancers = []
             for line in f:
                 cancers.append(line)
-    thread_q = queue.Queue()                
+    thread_q = queue.Queue(4)                
     for cancer in cancers:
         t = threading.Thread(target=download_cancer, args=(thread_q,cancer,download_dir))
         t.start()

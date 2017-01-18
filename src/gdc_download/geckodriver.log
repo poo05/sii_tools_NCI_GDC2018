@@ -3,5 +3,23 @@
 1484779295540	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
 1484779295690	geckodriver::marionette	INFO	Connecting to Marionette on localhost:50255
 1484779309106	Marionette	INFO	Listening on port 50235
-[GFX1-]: Failed to create a content image bridge d[Child 22504] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
-[Child 21808] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 13256] WARNING: pipe error: 109: file c:/bu[Child 21404] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+ages will be lost
+
+pc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 20552] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1484779428649	addons.productaddons	WARN	Failed downloading via XHR, status: 0, reason: error
+1484779428651	addons.productaddons	WARN	Failed downloading via XHR, status: 0, reason: error
+6
+1484779414470	addons.productaddons	WARN	Failed downloading via XHR, status: 0, reason: error
+1484779414473	addons.productaddons	WARN	Failed downloading via XHR, status: 0, reason: error
+1484779414477	addons.productaddons	WARN	Failed downloading via XHR, status: 0, reason: error
+1484779520808	geckodriver	INFO	Listening on 127.0.0.1:51705
+1484779523513	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.r2EPmFBGl8KV
+1484779523637	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484779524501	geckodriver::marionette	INFO	Connecting to Marionette on localhost:52008
+[GFX1]: D3D11 device creation failed: 0x8007000e
+14847[GFX1-]: Failed to create a content image bridge device: 0x8007000e
+[GFX1-]: Failed to create a D3D11 content device: 0x8007000e
+[GFX1-]: Failed to create a D3D11 content device: 0x8007000e
