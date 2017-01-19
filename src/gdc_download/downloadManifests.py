@@ -62,7 +62,7 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         driver.get(website)
         driver.implicitly_wait(60)
 
-        driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/button') #<button class="btn btn-primary" data-ng-click="wc.acceptWarning()" data-translate=""><span class="ng-scope" style="">Accept</span></button>
+        driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/button').click() #<button class="btn btn-primary" data-ng-click="wc.acceptWarning()" data-translate=""><span class="ng-scope" style="">Accept</span></button>
 
         #Click on the banner that says that the site is a gov't website
         '''try:
