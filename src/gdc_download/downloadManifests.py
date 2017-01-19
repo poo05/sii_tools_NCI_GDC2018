@@ -66,7 +66,8 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         try:
             driver.find_element_by_css_selector("button.btn.btn-primary").click()
         except NoSuchElementException:
-            driver.implicitly_wait(300)
+            driver.implicitly_wait(700)
+            print("Yes?")
             try:
                 driver.find_element_by_css_selector("button.btn.btn-primary").click()
             except NoSuchElementException:
