@@ -24,6 +24,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions
 
 
 def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
@@ -60,8 +61,16 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         website = base_url + '/query/s?query=' + urllib.parse.quote(qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')')        #Go to website
         driver.get(website)
         driver.implicitly_wait(60)
+
         #Click on the banner that says that the site is a gov't website
-        driver.find_element_by_css_selector("button.btn.btn-primary").click()
+        try:
+            driver.find_element_by_css_selector("button.btn.btn-primary").click()
+        except NoSuchElementException:
+            driver.implicitly_wait(60)
+            try:
+                driver.find_element_by_css_selector("button.btn.btn-primary").click()
+            except NoSuchElementException:
+                print("No gov't notice")
         #wait 10s for page to load
         driver.implicitly_wait(10)
         #Click search query
@@ -164,6 +173,7 @@ def multithread(cancers_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt',
         t = threading.Thread(target=download_cancer, args=(thread_q,cancer,download_dir))
         thread_q.put(t)
         t.start()
+        thread_q.join()
         thread_q.get(t)
 
         

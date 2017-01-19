@@ -13,3 +13,37 @@
 1484780741726	Marionette	INFO	Listening on port 53817
 [Child 21192] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
 [Child 21192] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1484783802593	geckodriver	INFO	Listening on 127.0.0.1:58557
+1484783804477	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.KInTtt32yUoH
+1484783804478	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484783804503	geckodriver::marionette	INFO	Connecting to Marionette on localhost:58563
+1484783806550	Marionette	INFO	Listening on port 58563
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+[Child 17316] ###!!! ABORT: Aborting on channel error.: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/glue/MessageChannel.cpp, line 2056
+1484783881606	geckodriver	INFO	Listening on 127.0.0.1:58667
+1484783883610	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.QICdmEGo6Yih
+1484783883612	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484783883629	geckodriver::marionette	INFO	Connecting to Marionette on localhost:58673
+1484783884735	Marionette	INFO	Listening on port 58673
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript error: resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/client/inspector/breadcrumbs.js, line 486: TypeError: this.handleMouseLeave is not a function
+[Child 31440] ###!!! ABORT: Aborting on channel error.: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/glue/MessageChannel.cpp, line 2056
+1484783959248	geckodriver	INFO	Listening on 127.0.0.1:58752
+1484783961245	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.d5lb9O4iGvB3
+1484783961246	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484783961264	geckodriver::marionette	INFO	Connecting to Marionette on localhost:58758
+1484783962329	Marionette	INFO	Listening on port 58758
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+[Child 12904] ###!!! ABORT: Aborting on channel error.: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/glue/MessageChannel.cpp, line 2056
+1484784036483	geckodriver	INFO	Listening on 127.0.0.1:58848
+1484784038476	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.LIuZtuqrDXYu
+1484784038477	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484784038495	geckodriver::marionette	INFO	Connecting to Marionette on localhost:58855
+1484784039532	Marionette	INFO	Listening on port 58855
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+[Child 18568] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 18568] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
