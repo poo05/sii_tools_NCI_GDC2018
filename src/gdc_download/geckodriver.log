@@ -49,36 +49,28 @@ JavaScript error: , line 0: uncaught exception: undefined
 efox.exe
 1484780647105	geckodriver::marionette	INFO	Connecting to Marionette on localhost:53764
 1484780648271	Marionette	INFO	Listening on port 53764
-1484781186586	geckodriver	INFO	Listening on 127.0.0.1:54070
-1484781188580	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.MlFUEoZIHuHy
-1484781188582	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
-1484781188600	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54076
-1484781189759	Marionette	INFO	Listening on port 54076
-[Child 14040] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
-[Child 14040] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
-1484781264773	geckodriver	INFO	Listening on 127.0.0.1:54115
-1484781266780	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.jUDZ26ONxSIR
-1484781266782	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
-1484781266801	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54123
-1484781267912	Marionette	INFO	Listening on port 54123
+JavaScript warning: https://gdc.cancer.gov/files/js/js_gPM6NXOQjN2XM2JWQGfy07nKmcdDFrL289YA7h80ySs.js, line 1: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
 JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
 JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
-[Child 8504] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
-[Child 8504] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
- have initializers
-JavaScript error: http://us-ads.openx.net/w/1.0/jstag, line 9: Error: Permission denied to access property "realvu"
-JavaScript error: http://us-ads.openx.net/w/1.0/jstag, line 9: Error: Permission denied to access property "realvu"
-JavaScript error: http://globalinc.prod.ehc.com/design/js/analytics/omniturev1.dot?h=-&hostname=sweetexpectations.net&division=hcahealthcaregulfcoastdivru line 268 > Function, line 1: TypeError: s._tpDST[d.getFullYear(...)] is undefined
-JavaScript error: http://elementalselenium.com/assets/application.3735a3ac85cc71750c8962962f82c159.js, line 670: SyntaxError: missing ; before statement
-JavaScript error: http://elementalselenium.com/assets/foundation.340873807cf59bea809c738a8a387285.js, line 2: TypeError: 
-JavaScript warning: http://code.jquery.com/jquery-1.10.2.min.js, line 1: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
-JavaScript error: http://globalinc.prod.ehc.com/design/js/analytics/omniturev1.dot?h=-&hostname=sweetexpectations.net&division=hcahealthcaregulfcoastdivru line 268 > Function, line 1: TypeError: s._tpDST[d.getFullYear(...)] is undefined
-[Child 5440] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
-9508: unreachable code after return statement
-[Child 16880] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
-le.tGgtT6S6AdZD
-1484782214812	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
-1484782214830	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54712
+[Parent 7428] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 25992] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 25992] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+Handler function NetworkEventActorProxy.addResponseContent threw an exception: [Exception... "Component returned failure code: 0xc1f30001 (NS_ERROR_NOT_INITIALIZED) [nsIMessageSender.sendAsyncMessage]"  nsresult: "0xc1f30001 (NS_ERROR_NOT_INITIALIZED)"  location: "JS frame :: resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js :: NetworkEventActorProxy.methodFactory/< :: line 1551"  data: no]
+Stack: NetworkEventActorProxy.methodFactory/<@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js:1551:5
+exports.makeInfallible/<@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/ThreadSafeDevToolsUtils.js:101:14
+NetworkResponseListener.prototype._onComplete@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js:641:5
+NetworkResponseListener.prototype.onStreamClose@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js:590:7
+NetworkResponseListener.prototype.onInputStreamReady@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js:691:7
+Line: 1551, column: 0
+console.error: 
+  Handler function NetworkEventActorProxy.addResponseContent threw an exception: [Exception... "Component returned failure code: 0xc1f30001 (NS_ERROR_NOT_INITIALIZED) [nsIMessageSender.sendAsyncMessage]"  nsresult: "0xc1f30001 (NS_ERROR_NOT_INITIALIZED)"  location: "JS frame :: resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js :: NetworkEventActorProxy.methodFactory/< :: line 1551"  data: no]
+Stack: NetworkEventActorProxy.methodFactory/<@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js:1551:5
+exports.makeInfallible/<@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/ThreadSafeDevToolsUtils.js:101:14
+NetworkResponseListener.prototype._onComplete@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js:641:5
+NetworkResponseListener.prototype.onStreamClose@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js:590:7
+NetworkResponseListener.prototype.onInputStreamReady@resource://gre/modules/commonjs/toolkit/loader.js -> resource://devtools/shared/webconsole/network-monitor.js:691:7
+Line: 1551, column: 0
+onette on localhost:54712
 1484782215927	Marionette	INFO	Listening on port 54712
 JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
 JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement

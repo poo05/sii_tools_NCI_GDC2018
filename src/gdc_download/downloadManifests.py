@@ -76,6 +76,7 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         )
         print(qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')')
 
+        driver.find_element_by_id("gql").submit()
         #wait 10s for page to load
         driver.implicitly_wait(20)
         #Click search query

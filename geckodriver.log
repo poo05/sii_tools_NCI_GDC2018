@@ -560,3 +560,37 @@ JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreach
 1484955903204	Marionette	INFO	Listening on port 54127
 [Child 17440] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
 [Child 17440] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1484956415753	geckodriver	INFO	Listening on 127.0.0.1:54344
+1484956417747	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.YgJj6v3P3fB9
+1484956417748	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484956417767	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54352
+1484956418944	Marionette	INFO	Listening on port 54352
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+[Child 8964] ###!!! ABORT: Aborting on channel error.: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/glue/MessageChannel.cpp, line 2056
+1484956441666	geckodriver	INFO	Listening on 127.0.0.1:54411
+1484956443656	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.ckeu4X7JQqGg
+1484956443658	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484956443677	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54417
+1484956444884	Marionette	INFO	Listening on port 54417
+1484956508345	addons.productaddons	WARN	Failed downloading via XHR, status: 0, reason: error
+[Child 8680] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 8680] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+1484956508350	addons.productaddons	WARN	Failed downloading via XHR, status: 0, reason: error
+1484956508352	addons.productaddons	WARN	Failed downloading via XHR, status: 0, reason: error
+1484956510349	geckodriver	INFO	Listening on 127.0.0.1:54454
+1484956512338	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.BQ7AvS1ekJak
+1484956512340	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484956512357	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54460
+1484956513435	Marionette	INFO	Listening on port 54460
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+[Child 18804] WARNING: pipe error: 232: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 513
+[Child 18804] ###!!! ABORT: Aborting on channel error.: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/glue/MessageChannel.cpp, line 2056
+1484956536463	geckodriver	INFO	Listening on 127.0.0.1:54520
+1484956538437	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.SxGjWajHajIO
+1484956538438	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
+1484956538457	geckodriver::marionette	INFO	Connecting to Marionette on localhost:54526
+1484956539639	Marionette	INFO	Listening on port 54526
+JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
+JavaScript warning: https://gdc.cancer.gov/files/js/js_gPM6NXOQjN2XM2JWQGfy07nKmcdDFrL289YA7h80ySs.js, line 1: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
