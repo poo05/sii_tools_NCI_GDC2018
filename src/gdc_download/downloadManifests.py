@@ -58,30 +58,36 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         #Base of the search string with the project name integrated
         qString = queryS[0]+ cancer +queryS[1]
         driver.maximize_window()
+        driver.get(base_url)
+        driver.implicitly_wait(10)
+         #Click on the banner that says that the site is a gov't website
+        try:
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/button[@class="btn btn-primary"]').click() #<button class="btn btn-primary" data-ng-click="wc.acceptWarning()" data-translate=""><span class="ng-scope" style="">Accept</span></button>
+        except NoSuchElementException:
+            print("Error! Government banner error")
+        driver.implicitly_wait(10)
+        #use a prepared search query
         website = base_url + '/query/s?query=' + urllib.parse.quote(qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')')        #Go to website
         driver.get(website)
-        driver.implicitly_wait(60)
 
-        driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/button').click() #<button class="btn btn-primary" data-ng-click="wc.acceptWarning()" data-translate=""><span class="ng-scope" style="">Accept</span></button>
+        driver.find_element_by_id("gql").clear()
+        driver.find_element_by_id("gql").send_keys(
+            qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')'
+        )
+        print(qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')')
 
-        #Click on the banner that says that the site is a gov't website
-        '''try:
-            driver.find_element_by_css_selector("button.btn.btn-primary").click()
-        except NoSuchElementException:
-            driver.implicitly_wait(700)
-            print("Yes?")
-            try:
-                driver.find_element_by_css_selector("button.btn.btn-primary").click()
-            except NoSuchElementException:
-                print("No gov't notice")'''
         #wait 10s for page to load
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(20)
         #Click search query
-        driver.find_element_by_xpath("//div[@id='skip']/div/div/div/search-bar/div/div/div/div[2]/button").click()
+        try:
+            driver.find_element_by_xpath("//div[@id='skip']/div/div/div/search-bar/div/div/div/div[2]/button").click()
+        except NoSuchElementException:
+            print("Search failed")
         #wait 10s for page to load
         driver.implicitly_wait(10)
         #Click on download manifest
-        driver.find_element_by_css_selector("span.ng-binding.ng-scope").click()
+        driver.find_element_by_link_text("Download Manifest").click()
+
         for ftype in queries:
             #Go to website
             driver.get(base_url + '/query/s?query=' + urllib.parse.quote(qString + ' and (' + ftype +')'))
@@ -97,7 +103,6 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
             driver.find_element_by_css_selector("i.fa.fa-shopping-cart").click()
             #wait 60s for page to load
             driver.implicitly_wait(60)
-            
             #Click on Download Metadata
             driver.find_element_by_xpath("//div[@id='skip']/div/section[2]/div/div/button").click()
             #Wait 5s for button to appear
@@ -117,8 +122,6 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         fileSort = comp_time(downloadDir)
         for meta,prefix in zip(fileSort,qName):
             shutil.move(downloadDir+'/'+meta, dest+'/'+ prefix+'_'+cancer_name+'.json')
-    except:
-        print("Error!")
     finally:
         print(cancer_name)
         driver.quit()
