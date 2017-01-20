@@ -42,10 +42,10 @@ def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
         cancer_name = cancer_search.group(1)
         
         
-        queryS = ['(cases.project.project_id in [','] and files.access in ["open"])']
+        queryS = ['(cases.project.project_id in [','] and files.access in [open])']
         queries = ['(files.data_category in ["Simple Nucleotide Variation"] and files.analysis.workflow_type in ["MuTect2 Variant Aggregation and Masking"])',
                  '(files.data_category in ["Copy Number Variation"] and files.data_type in ["Copy Number Segment"])',
-                 '(files.data_type in ["Gene Expression Quantification"] and files.analysis.workflow_type in ["HTSeq - FPKM"] and files.access in ["open"])',
+                 '(files.data_type in ["Gene Expression Quantification"] and files.analysis.workflow_type in ["HTSeq - FPKM"] and files.access in [open])',
                  '(files.data_type in ["miRNA Expression Quantification"] and files.experimental_strategy in ["miRNA-Seq"])',
                  '(files.data_category in ["DNA Methylation"])'
                 ]             
