@@ -1,0 +1,47 @@
+{
+    "op": "and",
+    "content": [
+        {
+            "op": "in",
+            "content": {
+                "field": "files.data_category",
+                "value": [
+                    "Simple Nucleotide Variation"
+                ]
+            }
+        },
+        {
+            "op": "in",
+            "content": {
+                "field": "files.analysis.workflow_type",
+                "value": [
+                    "MuTect2 Variant Aggregation and Masking"
+                ]
+            }
+        }
+    ]
+}
+
+{
+    "op": "and",
+    "content": [
+        {
+            "op": "in",
+            "content": {
+                "field": "files.data_category",
+                "value": [
+                    "Copy Number Variation"
+                ]
+            }
+        },
+        {
+            "op": "in",
+            "content": {
+                "field": "files.analysis.workflow_type",
+                "value": [
+                    "MuTect2 Variant Aggregation and Masking"
+                ]
+            }
+        }
+    ]
+}

@@ -594,3 +594,9 @@ JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreach
 1484956539639	Marionette	INFO	Listening on port 54526
 JavaScript warning: https://gdc-portal.nci.nih.gov/js/app.js, line 9508: unreachable code after return statement
 JavaScript warning: https://gdc.cancer.gov/files/js/js_gPM6NXOQjN2XM2JWQGfy07nKmcdDFrL289YA7h80ySs.js, line 1: Using //@ to indicate sourceMappingURL pragmas is deprecated. Use //# instead
+[Parent 17276] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 17276] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 17276] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 17276] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 17276] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Parent 17276] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
