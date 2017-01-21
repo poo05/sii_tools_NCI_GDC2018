@@ -1,0 +1,126 @@
+{
+    "main_request": {
+        "op": "and",
+        "content": [
+            {
+                "op": "in",
+                "content": {
+                    "field": "cases.project.project_id",
+                    "value": [
+                        "{cancer}"
+                    ]
+                }
+            },
+            {
+                "op": "in",
+                "content": {
+                    "field": "files.access",
+                    "value": [
+                        "open"
+                    ]
+                }
+            }
+        ]
+    },
+    "requests": [
+        {
+            "op": "and",
+            "content": [
+                {
+                    "op": "in",
+                    "content": {
+                        "field": "files.data_category",
+                        "value": [
+                            "Simple Nucleotide Variation"
+                        ]
+                    }
+                },
+                {
+                    "op": "in",
+                    "content": {
+                        "field": "files.analysis.workflow_type",
+                        "value": [
+                            "MuTect2 Variant Aggregation and Masking"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "op": "and",
+            "content": [
+                {
+                    "op": "in",
+                    "content": {
+                        "field": "files.data_category",
+                        "value": [
+                            "Copy Number Variation"
+                        ]
+                    }
+                },
+                {
+                    "op": "in",
+                    "content": {
+                        "field": "files.data_type",
+                        "value": [
+                            "Copy Number Segment"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "op": "and",
+            "content": [
+                {
+                    "op": "in",
+                    "content": {
+                        "field": "files.data_category",
+                        "value": [
+                            "Gene Expression Quantification"
+                        ]
+                    }
+                },
+                {
+                    "op": "in",
+                    "content": {
+                        "field": "files.analysis.workflow_type",
+                        "value": [
+                            "HTSeq - FPKM"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "op": "and",
+            "content": [
+                {
+                    "op": "in",
+                    "content": {
+                        "field": "files.data_category",
+                        "value": [
+                            "miRNA Expression Quantification"
+                        ]
+                    }
+                },
+                {
+                    "op": "in",
+                    "content": {
+                        "field": "files.experimental_strategy",
+                        "value": [
+                            "miRNA-Seq"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "op": "in",
+            "content": {
+                "field": "files.data_category",
+                "value": "DNA Methylation"
+            }
+        }
+    ]
+}
