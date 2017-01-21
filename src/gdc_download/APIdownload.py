@@ -11,7 +11,7 @@ with open('queries.json') as f:
 with open('cancers.txt') as f:
     cancers = [cancer for cancer in f]
 
-def send_manifest_request(cancer,path):
+def download_manifest(cancer,path):
     manifest_query = json_queries
     manifest_query['main_request']['content'].extend(json_queries['requests'])
     
@@ -25,11 +25,15 @@ def send_manifest_request(cancer,path):
     query_url = 'https://gdc-api.nci.nih.gov/files?filters='+query+'&size=30000&return_type=manifest'
     
     #Execute the http get url
-    file_name = path+'/'+cancer+'.tsv'
+    name = re.match('.+-(.+)',cancer)
+    file_name = path+'/'+name.group(1)+'.tsv'
     api_response = requests.get(query_url)
     
     #Write manifest to file
     with open(file_name,'w') as f:
         for line in api_response.iter_lines():
-            f.write(line)
-    return open(file_name).exists
+            f.write(line+'\n')
+    return f.exists()
+
+def write_metadata(manifest_path):
+    with open(manifest_path) as f:
