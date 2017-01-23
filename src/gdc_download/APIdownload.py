@@ -23,7 +23,7 @@ def download_manifest(cancer, path):
     """ Downloads the manifest from NCI-GDC via API using
         the cancer (i.e. project name) and path for a set of queries.
     """
-    manifest_query = json_queries
+    manifest_query = json_queries.copy()
     manifest_query['main_request']['content'].extend(json_queries['requests'])
 
     #Replace the cancer filter placeholder with the cancer name
@@ -32,7 +32,7 @@ def download_manifest(cancer, path):
     manifest_query['main_request']['content'][0] = cancer_dict
 
     #Create the http get url
-    query = urllib.parse.urlencode(json.dumps(manifest_query))
+    query = urllib.parse.urlencode(json.dumps(manifest_query['main_request']))
     query_url = 'https://gdc-api.nci.nih.gov/files?filters='+query+'&size=30000&return_type=manifest'
 
     #Execute the http get url
@@ -47,7 +47,50 @@ def download_manifest(cancer, path):
     return f.exists()
 
 def download_other_manifests(cancer,path):
-    for 
+    """ DocString goes here
+    """
+    #initiate manifest list
+    manifests = []
+
+    #Find cancer name
+    name = re.match('.+-(.+)', cancer).group(1)
+
+    #Use main query
+    manifest_query = json_queries.copy()
+    cancer_dict = manifest_query['main_request']['content'][0]
+    cancer_dict['value'] = [cancer]
+    manifest_query['main_request']['content'][0] = cancer_dict
+    manifest_query = manifest_query['main_request']
+
+    #Instantiate requests for each type of manifest
+    for i in json_queries["requests"]:
+        temp_query = manifest_query.copy()
+        temp_dic = temp_query['content']
+        temp_dic.append(i)
+        temp_query['content'] = temp_dic
+
+        #Save json request as a urlencoded string
+        json_string = json.dumps(temp_query)
+        request_string = urllib.parse.urlencode(json_string)
+        manifests.append(request_string)
+
+    #import file prefixes
+    with open('file_prefixes.txt') as f:
+        prefixes = [prefix for prefix in f]
+
+    #Ask for requests in sequence
+    manifests = ['https://gdc-api.nci.nih.gov/files?filters='+query+'&size=30000&return_type=manifest' for query in manifests]
+
+    for prefix,query in zip(prefixes, manifests):
+        
+        file_name = prefix + '_' + name + '.tsv'
+        
+        response = requests.get(query)
+        json_response = response.json()
+        
+        #Write the response to a file
+        with open(file_name, 'w') as f:
+            json.dump(json_response,f)
 
 def write_metadata(manifest_path, dest):
     
