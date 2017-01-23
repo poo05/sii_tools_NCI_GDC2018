@@ -11,6 +11,13 @@ with open('queries.json') as f:
 with open('cancers.txt') as f:
     cancers = [cancer for cancer in f]
 
+#import the metadata fields normally seen
+with requests.get('https://gdc-api.nci.nih.gov/files/_mapping') as f:
+    json_field_map = json.load(f)
+    expand_fields = json_field_map["expand"]
+    expand_string = expand_fields.join(',')
+    expand_req_string = 'expand?=' + expand_string
+
 def download_manifest(cancer,path):
     manifest_query = json_queries
     manifest_query['main_request']['content'].extend(json_queries['requests'])
@@ -35,5 +42,7 @@ def download_manifest(cancer,path):
             f.write(line+'\n')
     return f.exists()
 
+
 def write_metadata(manifest_path):
     with open(manifest_path) as f:
+        file_ids = [i[0:i.find('\t')] for i in f]
