@@ -35,7 +35,7 @@ def download_manifest(cancer, path):
     manifest_query['main_request']['content'][0] = cancer_dict
 
     #Create the http get url
-    query = urllib.parse.urlencode(json.dumps(manifest_query['main_request']))
+    query = urllib.parse.quote(json.dumps(manifest_query['main_request']))
     query_url = 'https://gdc-api.nci.nih.gov/files?filters='+query+'&size=30000&return_type=manifest'
 
     #Execute the http get url
@@ -72,9 +72,9 @@ def download_other_manifests(cancer, path):
         temp_dic.append(i)
         temp_query['content'] = temp_dic
 
-        #Save json request as a urlencoded string
+        #Save json request as a quoted string
         json_string = json.dumps(temp_query)
-        request_string = urllib.parse.urlencode(json_string)
+        request_string = urllib.parse.quote(json_string)
         manifests.append(request_string)
 
     #import file prefixes
