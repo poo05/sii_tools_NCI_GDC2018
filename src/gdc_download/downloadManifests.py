@@ -4,76 +4,94 @@ Created on Mon Dec 19 16:23:18 2016
 @author: Eric Ye
 """
 
-# -*- coding: utf-8 -*-
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoAlertPresentException
-from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
-import urllib
-import subprocess
+import collections
+import getopt
 import os
 import re
-import threading
-import queue
-from datetime import datetime
 import shutil
-import collections
-import sys,getopt
- 
-def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC', gdc_path='', 
-           mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'
-           ):
-    
-    try: 
-    
+import subprocess
+import sys
+import threading
+import time
+import urllib
+from datetime import datetime
+
+import queue
+from selenium import webdriver
+from selenium.common.exceptions import (NoAlertPresentException,
+                                        NoSuchElementException)
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions
+
+
+def download_cancer(q,cancer,downloadDir,dest='//sii-nas3/Data/NCI_GDC',
+    gdc_path=True,
+    mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'):
+    try:
+        if gdc_path == True:
+            gdc_path == downloadDir 
         binary = FirefoxBinary(mozillaPath)
         
         driver = webdriver.Firefox(firefox_binary=binary)
-        driver.implicitly_wait(30)
         base_url = "https://gdc-portal.nci.nih.gov"
-        cancer_search = re.match('+-(.+)',cancer)
+        print(cancer)
+        cancer_search = re.match('.+-(.+)',cancer)
         cancer_name = cancer_search.group(1)
         
         
-        queryS = ['(cases.project.project_id in [','] and files.access in ["open"])']
+        queryS = ['(cases.project.project_id in [','] and files.access in [open])']
         queries = ['(files.data_category in ["Simple Nucleotide Variation"] and files.analysis.workflow_type in ["MuTect2 Variant Aggregation and Masking"])',
                  '(files.data_category in ["Copy Number Variation"] and files.data_type in ["Copy Number Segment"])',
-                 '(files.data_type in ["Gene Expression Quantification"] and files.analysis.workflow_type in ["HTSeq - FPKM"] and files.access in ["open"])',
+                 '(files.data_type in ["Gene Expression Quantification"] and files.analysis.workflow_type in ["HTSeq - FPKM"] and files.access in [open])',
                  '(files.data_type in ["miRNA Expression Quantification"] and files.experimental_strategy in ["miRNA-Seq"])',
                  '(files.data_category in ["DNA Methylation"])'
                 ]             
         qName = ['snv','cnv','gene_expr','mirna','meth']
             
-        
-        #Create a folder in the destination to store the results
-        os.mkdir(dest+'/'+cancer_name)
+        if os.path.exists(dest+'/'+cancer_name) != True:
+            #Create a folder in the destination to store the results
+            os.mkdir(dest+'/'+cancer_name)
+
         #Base of the search string with the project name integrated
         qString = queryS[0]+ cancer +queryS[1]
-        
-        #Go to website
-        driver.get(base_url + '/query/s?query=' + 
-                   urllib.quote(
-                                    qString + ' and (' + queries[0] + ' or ' + 
-                                    queries[1]+' or '+queries[2]+' or ' + 
-                                    queries[3] + ' or ' + queries[4] +')'
-                                    )
-                    )
-        #Click on the banner that says that the site is a gov't website
-        driver.find_element_by_css_selector("button.btn.btn-primary").click()
-        #wait 10s for page to load
+        driver.maximize_window()
+        driver.get(base_url)
         driver.implicitly_wait(10)
+         #Click on the banner that says that the site is a gov't website
+        try:
+            driver.find_element(By.XPATH, '/html/body/div[1]/div/div/div[3]/button[@class="btn btn-primary"]').click() #<button class="btn btn-primary" data-ng-click="wc.acceptWarning()" data-translate=""><span class="ng-scope" style="">Accept</span></button>
+        except NoSuchElementException:
+            print("Error! Government banner error")
+        driver.implicitly_wait(10)
+        #use a prepared search query
+        website = base_url + '/query/s?query=' + urllib.parse.quote(qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')')        #Go to website
+        driver.get(website)
+
+        driver.find_element_by_id("gql").clear()
+        driver.find_element_by_id("gql").send_keys(
+            qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')'
+        )
+        print(qString + ' and (' + queries[0] + ' or ' + queries[1]+' or '+queries[2]+' or ' + queries[3] + ' or ' + queries[4] +')')
+
+        driver.find_element_by_id("gql").submit()
+        #wait 10s for page to load
+        driver.implicitly_wait(20)
         #Click search query
-        driver.find_element_by_xpath("//div[@id='skip']/div/div/div/search-bar/div/div/div/div[2]/button").click()
+        try:
+            driver.find_element_by_xpath("//div[@id='skip']/div/div/div/search-bar/div/div/div/div[2]/button").click()
+        except NoSuchElementException:
+            print("Search failed")
         #wait 10s for page to load
         driver.implicitly_wait(10)
         #Click on download manifest
-        driver.find_element_by_css_selector("span.ng-binding.ng-scope").click()
+        driver.find_element_by_link_text("Download Manifest").click()
+
         for ftype in queries:
             #Go to website
-            driver.get(base_url + '/query/s?query=' + urllib.quote(qString + ' and (' + ftype +')'))
+            driver.get(base_url + '/query/s?query=' + urllib.parse.quote(qString + ' and (' + ftype +')'))
             #wait 10s for page to load
             driver.implicitly_wait(10)
             #Click search query
@@ -88,21 +106,26 @@ def download_cancer(q,cancer,downloadDir,dest='\\\\sii-nas3/Data/NCI-GDC', gdc_p
             driver.implicitly_wait(60)
             #Click on Download Metadata
             driver.find_element_by_xpath("//div[@id='skip']/div/section[2]/div/div/button").click()
+            #Wait 5s for button to appear
+            driver.implicitly_wait(5)
             #Click clear cart
             driver.find_element_by_css_selector("#split-control-1482191843912 > span > span.ng-binding.ng-scope").click()
-            #Wait 1s for button to appear
-            driver.implicitly_wait(1)
+            #Wait 5s for button to appear
+            driver.implicitly_wait(5)
             #Click clear all items in cart
             driver.find_element_by_id("clear-button").click()
-        # get the manifest file 
-        manifest = getManifest(downloadDir) 
+        # get the manifest file
+        manifest = getManifest(downloadDir)
         # Run the gdc-client with the manifest
-        subprocess.call([gdc_path+'/gdc-client', 'download','-d', dest+'/'+cancer_name,'--no-segment-md5sums','--no-related-files','--no-annotations', '-m', manifest])   
+        subprocess.call([gdc_path+'/gdc-client', 'download','-d', dest+'/'+cancer_name,
+            '--no-segment-md5sums','--no-related-files','--no-annotations', '-m', manifest])
         os.remove(manifest)
         fileSort = comp_time(downloadDir)
         for meta,prefix in zip(fileSort,qName):
             shutil.move(downloadDir+'/'+meta, dest+'/'+ prefix+'_'+cancer_name+'.json')
     finally:
+        print(cancer_name)
+        driver.quit()
         q.task_done()
 
     
@@ -131,8 +154,8 @@ def comp_time(downDir):
         
 
 def getManifest(downDir):
-    flist = os.listdir(downDir)
     while True:
+        flist = os.listdir(downDir)
         check = False
         for i in flist:
             if i[-4:] == '.tsv':
@@ -141,30 +164,36 @@ def getManifest(downDir):
             if i[:12] == 'gdc_manifest':
                 check = True
         assert (check)
+        time.sleep(10)
 
 
 def multithread(cancers_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt',
                 download_dir = 'C:\\Users\\localadmin\\Downloads',
-                dest='\\\\sii-nas3/Data/NCI-GDC', gdc_path='C:\\Users\\localadmin\\Downloads', 
+                dest='//sii-nas3/Data/NCI_GDC', gdc_path='C:\\Users\\localadmin\\Downloads', 
                 mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'):
     with open(cancers_dir,'r') as f:
             cancers = []
             for line in f:
                 cancers.append(line)
-    thread_q = queue.Queue(4)                
+    thread_q = queue.Queue(1)                
     for cancer in cancers:
-        t = threading.Thread(target=download_cancer, args=(cancer,download_dir))
-        t.start()
+        t = threading.Thread(target=download_cancer, args=(thread_q,cancer,download_dir))
         thread_q.put(t)
+        t.start()
+        thread_q.join()
+        thread_q.get(t)
+
+        
+
 
 def main():        
     cancer_dir = 'C:\\Users\\localadmin\\Downloads\\cancers.txt'
     download_dir = 'C:\\Users\\localadmin\\Downloads'
-    dest='\\\\sii-nas3/Data/NCI-GDC'
+    dest='//sii-nas3/Data/NCI_GDC'
     gdc_path='C:\\Users\\localadmin\\Downloads'
     mozillaPath = 'C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe'
     try:
-        opts, args = getopt.getopt(sys.argv[1:],"hg",["help","c_dir=","dest=","g_path=","m_path=", "d_dir="])
+        opts, args = getopt.getopt(sys.argv[1:],"hgd",["help","c_dir=","dest=","g_path=","m_path=", "d_dir="])
     except getopt.GetoptError:
         print( 'downloadManifests.py -g --c_dir <directory of cancer list> '
               +'--dest <directory to save the files>'+
@@ -175,6 +204,8 @@ def main():
             print( 'downloadManifests.py -g --c_dir <directory of cancer list> '
               +'--dest <directory to save the files>'+
               ' --g_path <path of the gdc-client> --m_path <path of lastest mozilla browser>')
+        elif o == "-d":
+            break
         elif o == "--c_dir":
             cancer_dir = a
         elif o == "--dest":
