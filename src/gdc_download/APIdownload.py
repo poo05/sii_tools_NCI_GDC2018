@@ -17,7 +17,7 @@ with open('cancers.txt') as f:
 
 #import the metadata fields normally seen
 mapping = requests.get('https://gdc-api.nci.nih.gov/files/_mapping')
-json_field_map = json.loads(mapping)
+json_field_map = mapping.json()
 expand_fields = json_field_map["expand"]
 expand_string = expand_fields.join(',')
 expand_req_string = '?expand=' + expand_string
