@@ -19,7 +19,7 @@ with open('cancers.txt') as f:
 mapping = requests.get('https://gdc-api.nci.nih.gov/files/_mapping')
 json_field_map = mapping.json()
 expand_fields = json_field_map["expand"]
-expand_string = expand_fields.join(',')
+expand_string = ','.join(expand_fields)
 expand_req_string = '?expand=' + expand_string
 
 def download_manifest(cancer, path):
