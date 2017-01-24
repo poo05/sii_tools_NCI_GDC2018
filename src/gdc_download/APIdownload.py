@@ -46,6 +46,8 @@ def download_manifest(cancer, path):
     #Write manifest to file
     with open(file_name, 'w') as f:
         f.write(api_response.text)
+    
+    return file_name
 
 def download_other_manifests(cancer, path):
     """ DocString goes here
@@ -83,7 +85,8 @@ def download_other_manifests(cancer, path):
     file_names = []
 
     #Ask for requests in sequence
-    manifests = ['https://gdc-api.nci.nih.gov/files?filters='+query+'&size=30000&return_type=manifest' 
+    manifests = ['https://gdc-api.nci.nih.gov/files?filters='+
+                 query+'&size=30000&return_type=manifest' 
                  for query in manifests]
 
     for prefix, query in zip(prefixes, manifests):
@@ -94,12 +97,12 @@ def download_other_manifests(cancer, path):
 
         #Write the response to a file
         with open(file_name, 'w') as f:
-            json.dump(json_response, f,indent='\t')
-        
+            json.dump(json_response, f, indent='\t')
+
         file_names.append(file_name)
-    
+
     return file_names
-    
+
 def write_metadata(manifest_path, path=None):
     """ DocString Goes Here
     """
@@ -138,6 +141,7 @@ def write_files(manifest_path, gdc_path, path):
     os.remove(manifest_path)
 
 def main():
+    '''
     try:
         opts, args = getopt.getopt(sys.argv[1:],"hgd",["help","c_dir=","dest=","g_path=","m_path=", "d_dir="])
     except getopt.GetoptError:
@@ -147,9 +151,9 @@ def main():
         sys.exit(2)
     for o,a in opts:
         if o in ("-h","--help"):
-            print( 'downloadManifests.py -g --c_dir <directory of cancer list> '
-              +'--dest <directory to save the files>'+
-              ' --g_path <path of the gdc-client> --m_path <path of lastest mozilla browser>')
+            print( 'downloadManifests.py -g --c_dir <directory of cancer list> ' + 
+                    '--dest <directory to save the files>'+
+                    ' --g_path <path of the gdc-client>')
         elif o == "-d":
             break
         elif o == "--c_dir":
@@ -162,10 +166,15 @@ def main():
             download_dir = a    
         else:
             assert False, "unhandled option"
-    
+    '''
+    path = '//sii-nas3/Data/NCI_GDC'
     for cancer in CANCERS:
-        download_other_manifests(cancer,path)
-
+        name = re.match('.+-(.+)', cancer).group(1)
+        raw_manifests = download_other_manifests(cancer, path +'/'+ name)
+        for manifest in raw_manifests:
+            write_metadata(manifest)
+        all_manifest_path = download_manifest(cancer, path)
+        write_files(all_manifest_path, 'C:/Users/localadmin/Downloads', path +'/'+ name +'/'+ name)
 
 if __name__ == "__main__":
     main()
