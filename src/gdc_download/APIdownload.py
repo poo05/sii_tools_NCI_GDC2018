@@ -16,11 +16,11 @@ with open('cancers.txt') as f:
     CANCERS = [cancer for cancer in f]
 
 #import the metadata fields normally seen
-with requests.get('https://gdc-api.nci.nih.gov/files/_mapping') as f:
-    json_field_map = json.load(f)
-    expand_fields = json_field_map["expand"]
-    expand_string = expand_fields.join(',')
-    expand_req_string = '?expand=' + expand_string
+mapping = requests.get('https://gdc-api.nci.nih.gov/files/_mapping')
+json_field_map = json.load(f)
+expand_fields = json_field_map["expand"]
+expand_string = expand_fields.join(',')
+expand_req_string = '?expand=' + expand_string
 
 def download_manifest(cancer, path):
     """ Downloads the manifest from NCI-GDC via API using
