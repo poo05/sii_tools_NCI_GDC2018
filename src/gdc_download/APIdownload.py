@@ -1,9 +1,11 @@
-import urllib
+import getopt
 import json
-import re
-import requests
-import subprocess
 import os
+import re
+import subprocess
+import urllib
+
+import requests
 
 #import json requests
 with open('queries.json') as f:
@@ -20,7 +22,7 @@ with requests.get('https://gdc-api.nci.nih.gov/files/_mapping') as f:
     expand_string = expand_fields.join(',')
     expand_req_string = '?expand=' + expand_string
 
-def download_manifest(cancer, path, dest):
+def download_manifest(cancer, path):
     """ Downloads the manifest from NCI-GDC via API using
         the cancer (i.e. project name) and path for a set of queries.
     """
@@ -43,9 +45,7 @@ def download_manifest(cancer, path, dest):
 
     #Write manifest to file
     with open(file_name, 'w') as f:
-        for line in api_response.iter_lines():
-            f.write(line+'\n')
-    return f.exists()
+        f.write(api_response.text)
 
 def download_other_manifests(cancer, path):
     """ DocString goes here
@@ -79,6 +79,9 @@ def download_other_manifests(cancer, path):
     with open('file_prefixes.txt') as f:
         prefixes = [prefix for prefix in f]
 
+    #Store filenames
+    file_names = []
+
     #Ask for requests in sequence
     manifests = ['https://gdc-api.nci.nih.gov/files?filters='+query+'&size=30000&return_type=manifest' 
                  for query in manifests]
@@ -91,9 +94,13 @@ def download_other_manifests(cancer, path):
 
         #Write the response to a file
         with open(file_name, 'w') as f:
-            json.dump(json_response, f)
-
-def write_metadata(manifest_path, path):
+            json.dump(json_response, f,indent='\t')
+        
+        file_names.append(file_name)
+    
+    return file_names
+    
+def write_metadata(manifest_path, path=None):
     """ DocString Goes Here
     """
     #Get the file uuids from manifest
@@ -109,20 +116,56 @@ def write_metadata(manifest_path, path):
         response = requests.get('https://gdc-api.nci.nih.gov/files/'+ i + expand_req_string)
         json_response = response.json()
         meta_list.append(json_response)
+    
+    if path != None:
+        manifest_path = path + manifest_path[manifest_path.rfind('/'):]
 
     #Make pretty json file with metadata    
-    with open(path + manifest_path[:-4] + '.json') as f:
-        json.dump(meta_list, f)
+    with open(manifest_path[:-4] + '.json') as f:
+        json.dump(meta_list, f, indent='\t')
 
     os.remove(manifest_path)
 
 
 def write_files(manifest_path, gdc_path, path):
-    
-    #Download Files
+    """ DocString Goes Here
+    """
+    #Download Files using the gdc-client
     subprocess.call([gdc_path+'/gdc-client', 'download', '-d', path,
                      '--no-segment-md5sums', '--no-related-files', '--no-annotations',
                      '-m', manifest_path])
 
     os.remove(manifest_path)
+
+def main():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],"hgd",["help","c_dir=","dest=","g_path=","m_path=", "d_dir="])
+    except getopt.GetoptError:
+        print( 'downloadManifests.py -g --c_dir <directory of cancer list> '
+              +'--dest <directory to save the files>'+
+              ' --g_path <path of the gdc-client> --m_path <path of lastest mozilla browser>')
+        sys.exit(2)
+    for o,a in opts:
+        if o in ("-h","--help"):
+            print( 'downloadManifests.py -g --c_dir <directory of cancer list> '
+              +'--dest <directory to save the files>'+
+              ' --g_path <path of the gdc-client> --m_path <path of lastest mozilla browser>')
+        elif o == "-d":
+            break
+        elif o == "--c_dir":
+            cancer_dir = a
+        elif o == "--dest":
+            dest = a
+        elif o == "--g_path":
+            gdc_path = a
+        elif o == "--down_dir":
+            download_dir = a    
+        else:
+            assert False, "unhandled option"
     
+    for cancer in CANCERS:
+        download_other_manifests(cancer,path)
+
+
+if __name__ == "__main__":
+    main()
