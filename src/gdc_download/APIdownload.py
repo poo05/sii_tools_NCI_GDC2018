@@ -16,53 +16,65 @@ with open('cancers.txt') as f:
     CANCERS = [cancer for cancer in f]
 
 #import the metadata fields normally seen
-mapping = requests.get('https://gdc-api.nci.nih.gov/files/_mapping')
-json_field_map = mapping.json()
-expand_fields = json_field_map["expand"]
-expand_string = ','.join(expand_fields)
-expand_req_string = '?expand=' + expand_string
+expand_req_string = init_metadata()
 
-def download_manifest(cancer, path):
-    """ Downloads the manifest from NCI-GDC via API using
-        the cancer (i.e. project name) and path for a set of queries.
+def init_metadata():
+    """Fetch the expand fields from the NCI-GDC files/_mappping endpoint"""
+    mapping = requests.get('https://gdc-api.nci.nih.gov/files/_mapping')
+    json_field_map = mapping.json()
+    expand_fields = json_field_map["expand"]
+    expand_string = ','.join(expand_fields)
+    expand_req_string = '?expand=' + expand_string
+    return expand_req_string
+
+def download_manifest(cancer_project, dest):
+    """ Downloads the manifest of relevant files from NCI-GDC via API for a particular cancer project
+
+    Keywords arguments:
+    cancer_project -- the NCI-GDC project for the particular cancer (i.e. TCGA-BRCA)
+    dest -- the destination to which the files are downloaded
     """
+    #Create a copy of the constant that stores all required queries
     manifest_query = JSON_QUERIES.copy()
     manifest_query['main_request']['content'].extend(JSON_QUERIES['requests'])
 
     #Replace the cancer filter placeholder with the cancer name
-    cancer_dict = manifest_query['main_request']['content'][0]
-    cancer_dict['value'] = [cancer]
-    manifest_query['main_request']['content'][0] = cancer_dict
+    manifest_query['main_request']['content'][0]['value'] = [cancer_project]
 
     #Create the http get url
     query = urllib.parse.quote(json.dumps(manifest_query['main_request']))
     query_url = 'https://gdc-api.nci.nih.gov/files?filters='+query+'&size=30000&return_type=manifest'
 
     #Execute the http get url
-    name = re.match('.+-(.+)', cancer)
-    file_name = path + '/' + name.group(1) + '.tsv'
+    name = re.match('.+-(.+)', cancer_project)
+    file_name = dest + '/' + name.group(1) + '.tsv'
     api_response = requests.get(query_url)
 
     #Write manifest to file
     with open(file_name, 'w') as f:
         f.write(api_response.text)
-    
+
     return file_name
 
-def download_other_manifests(cancer, path):
-    """ DocString goes here
+def download_other_manifests(cancer_project, dest, create_dir=False):
+    """ Returns the manifests given the NCI_GDC project name of the cancer and the path
+
+    Keyword arguments:
+    cancer_project -- the NCI-GDC project for the particular cancer (i.e. TCGA-BRCA)
+    dest -- the destination string to which the files are downloaded. Ends without a slash
+    creat_dir -- a boolean that determines whether the pat should be created
     """
+    if create_fir:
+        os.mkdir(dest)
     #initiate manifest list
     manifests = []
 
     #Find cancer name
-    name = re.match('.+-(.+)', cancer).group(1)
+    name = re.match('.+-(.+)', cancer_project).group(1)
 
     #Use main query
     manifest_query = JSON_QUERIES.copy()
-    cancer_dict = manifest_query['main_request']['content'][0]
-    cancer_dict['value'] = [cancer]
-    manifest_query['main_request']['content'][0] = cancer_dict
+    manifest_query['main_request']['content'][0]['value'] = [cancer_project]
     manifest_query = manifest_query['main_request']
 
     #Instantiate requests for each type of manifest
@@ -90,7 +102,7 @@ def download_other_manifests(cancer, path):
                  for query in manifests]
 
     for prefix, query in zip(prefixes, manifests):
-        file_name = path + prefix + '_' + name + '.tsv'
+        file_name = dest + prefix + '_' + name + '.tsv'
 
         response = requests.get(query)
         json_response = response.json()
@@ -104,7 +116,7 @@ def download_other_manifests(cancer, path):
     return file_names
 
 def write_metadata(manifest_path, path=None):
-    """ DocString Goes Here
+    """ Replaces the manifest file with a JSON metadata file
     """
     #Get the file uuids from manifest
     with open(manifest_path) as f:
@@ -114,14 +126,16 @@ def write_metadata(manifest_path, path=None):
     #Metadata list
     meta_list = []
 
+    request_json = {"op":"in","content":{"field":"files.file_id","value":file_ids}} 
+    request_string = json.dumps(request_json)
+
     #Use NCI-GDC API to search for metadata
-    for i in file_ids:
-        response = requests.get('https://gdc-api.nci.nih.gov/files/'+ i + expand_req_string)
-        json_response = response.json()
-        meta_list.append(json_response)
+    response = requests.get('https://gdc-api.nci.nih.gov/files?filter='+ request_string + '&' + expand_req_string)
+    json_response = response.json()
+    meta_list.append(json_response)
     
     if path != None:
-        manifest_path = path + manifest_path[manifest_path.rfind('/'):]
+        manifest_path = path + '/' + manifest_path[manifest_path.rfind('/'):]
 
     #Make pretty json file with metadata    
     with open(manifest_path[:-4] + '.json') as f:
