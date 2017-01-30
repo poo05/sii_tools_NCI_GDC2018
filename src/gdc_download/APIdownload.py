@@ -80,9 +80,7 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
     #Instantiate requests for each type of manifest
     for i in JSON_QUERIES["requests"]:
         temp_query = manifest_query.copy()
-        temp_dic = temp_query['content']
-        temp_dic.append(i)
-        temp_query['content'] = temp_dic
+        temp_query['content'].append(i)
 
         #Save json request as a quoted string
         json_string = json.dumps(temp_query)
@@ -102,7 +100,7 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
                  for query in manifests]
 
     for prefix, query in zip(prefixes, manifests):
-        file_name = dest + prefix + '_' + name + '.tsv'
+        file_name = dest + '/' + prefix + '_' + name + '.tsv'
 
         response = requests.get(query)
         json_response = response.json()
@@ -115,8 +113,12 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
 
     return file_names
 
-def write_metadata(manifest_path, path=None):
+def write_metadata(manifest_path, del=True, path=None):
     """ Replaces the manifest file with a JSON metadata file
+    
+    Keyword Arguments
+    manifest_path -- string of the path where the manifest is stored
+    path -- an alternative path to which to save the json metadata
     """
     #Get the file uuids from manifest
     with open(manifest_path) as f:
@@ -140,19 +142,23 @@ def write_metadata(manifest_path, path=None):
     #Make pretty json file with metadata    
     with open(manifest_path[:-4] + '.json') as f:
         json.dump(meta_list, f, indent='\t')
+    
+    #delete the manifest
+    if del:
+        os.remove(manifest_path)
 
-    os.remove(manifest_path)
 
-
-def write_files(manifest_path, gdc_path, path):
+def write_files(manifest_path, gdc_path, path,del=True):
     """ DocString Goes Here
     """
     #Download Files using the gdc-client
     subprocess.call([gdc_path+'/gdc-client', 'download', '-d', path,
                      '--no-segment-md5sums', '--no-related-files', '--no-annotations',
                      '-m', manifest_path])
-
-    os.remove(manifest_path)
+    
+    #Delete the manifest
+    if del:
+        os.remove(manifest_path)
 
 def main():
     '''
