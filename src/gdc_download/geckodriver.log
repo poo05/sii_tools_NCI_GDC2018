@@ -38,10 +38,9 @@ via XHR, status: 0, reason: error
 1484780286300	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
 1484780286319	geckodriver::marionette	INFO	Connecting to Marionette on localhost:53674
 1484780287424	Marionette	INFO	Listening on port 53674
-1484780533621	geckodriver	INFO	Listening on 127.0.0.1:53717
-1484780535613	mozprofile::profile	INFO	Using profile path C:\Users\LOCALA~1\AppData\Local\Temp\rust_mozprofile.HrBboHAyI4kI
-1484780535614	geckodriver::marionette	INFO	Starting browser C:\Program Files (x86)\Mozilla Firefox\firefox.exe
-1484780535637	geckodriver::marionette	INFO	Connecting to Marionette on localhost:53723
+[Child 7968] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+[Child 7968] WARNING: pipe error: 109: file c:/builds/moz2_slave/m-rel-w32-00000000000000000000/build/src/ipc/chromium/src/chrome/common/ipc_channel_win.cc, line 346
+NFO	Connecting to Marionette on localhost:53723
 1484780536841	Marionette	INFO	Listening on port 53723
 JavaScript error: , line 0: uncaught exception: undefined
 JavaScript error: , line 0: uncaught exception: undefined
