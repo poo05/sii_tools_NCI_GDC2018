@@ -210,7 +210,7 @@ def main():
             cancer_dir = a
         elif o == "--dest":
             dest = a
-        elif o == "--g_path":
+        elif o == "--g_path":fdsafdafdafsdaf
             gdc_path = a
         elif o == "--down_dir":
             download_dir = a    
