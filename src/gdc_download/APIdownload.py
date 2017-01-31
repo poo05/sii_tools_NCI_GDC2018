@@ -24,7 +24,7 @@ def meta():
     json_field_map = mapping.json()
     expand_fields = json_field_map["expand"]
     expand_string = ','.join(expand_fields)
-    ret = '?expand=' + expand_string
+    ret = expand_string
     return ret
 
 # import the metadata fields normally seen
@@ -90,7 +90,7 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
 
     # Instantiate requests for each type of manifest
     for i in JSON_QUERIES["requests"]:
-        temp_query = manifest_query.copy()
+        temp_query = dict(manifest_query)
         temp_query['content'].append(i)
 
         # Save json request as a quoted string
@@ -100,7 +100,12 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
 
     # import file prefixes
     with open(SRC_PATH + '/' + 'file_prefixes.txt') as f:
-        prefixes = [prefix[:-1] for prefix in f]
+        prefixes = []
+        for prefix in f:
+            if prefix[-1] == '\n':
+                prefixes.append(prefix[:-1])
+            else:
+                prefixes.append(prefix)
 
     # Store filenames
     file_names = []
@@ -110,15 +115,16 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
                  query + '&size=30000&return_type=manifest'
                  for query in manifests]
 
+    print(prefixes)
     for prefix, query in zip(prefixes, manifests):
-        file_name = dest + '/' + prefix + '_' + name + '.tsv'
-
+        file_name = dest + '/' + prefix + '_metadata.' + name + '.tsv'
+        print(file_name)
         response = requests.get(query)
         #json_response = response.json()
-        print(response.text)
+        #print("fubar")
         # Write the response to a file
         with open(file_name, 'w') as f:
-            json.dump(json_response, f, indent='\t')
+            f.write(response.text)
 
         file_names.append(file_name)
 
@@ -140,13 +146,12 @@ def write_metadata(manifest_path, dels=True, path=None):
     # Metadata list
     meta_list = []
 
-    request_json = {"op": "in", "content": {
-        "field": "files.file_id", "value": file_ids}}
-    request_string = json.dumps(request_json)
+    payload_json = {"filters":{"op":"in", "content": {
+    "field": "files.file_id", "value": file_ids}},"fields":expand_req_string,"size":"30000"}
 
     # Use NCI-GDC API to search for metadata
-    response = requests.get(
-        'https://gdc-api.nci.nih.gov/files?filter=' + request_string + '&' + expand_req_string)
+    response = requests.post(
+        'https://gdc-api.nci.nih.gov/files', json=payload_json)
     json_response = response.json()
     meta_list.append(json_response)
 
@@ -155,7 +160,7 @@ def write_metadata(manifest_path, dels=True, path=None):
 
     # Make pretty json file with metadata
     with open(manifest_path[:-4] + '.json', 'w') as f:
-        json.dump(meta_list, f, indent='\t')
+        json.dump(meta_list, f, indent=2)
 
     # delete the manifest
     if dels:
@@ -214,6 +219,7 @@ def main():
     '''
     path = '//sii-nas3/Data/NCI_GDC'
     for cancer in CANCERS:
+        print(cancer)
         if cancer[-1] == '\n':
             cancer = cancer[:-1]
         name = re.match('.+-(.+)', cancer).group(1)
