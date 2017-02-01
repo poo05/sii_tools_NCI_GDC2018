@@ -2,7 +2,6 @@ import getopt
 import json
 import os
 import re
-import subprocess
 import urllib
 
 import requests
@@ -40,13 +39,15 @@ def download_manifest(cancer_project, dest):
     """
     # Create a copy of the constant that stores all required queries
     manifest_query = dict(JSON_QUERIES)
-    manifest_query['main_request']['content'].extend(JSON_QUERIES['requests'])
 
     # Replace the cancer filter placeholder with the cancer name
     manifest_query['main_request']['content'][0]["content"]['value'] = [cancer_project]
 
     print( manifest_query['main_request']['content'][0])
-
+    
+    manifest_query['main_request']['content'].append({"op":"or", "content":[]})
+    
+    manifest_query['main_request']['content'][-1]["content"].extend(JSON_QUERIES['requests'])
 
     # Create the http get url
     query = urllib.parse.quote(json.dumps(manifest_query['main_request']))
@@ -92,12 +93,15 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
     for i in JSON_QUERIES["requests"]:
         temp_query = dict(manifest_query)
         temp_query['content'].append(i)
-
+        
+        #dealing with weird object inheritance!!!
+        temp_query['content'].pop(2)
+        
         # Save json request as a quoted string
         json_string = json.dumps(temp_query)
         request_string = urllib.parse.quote(json_string)
         manifests.append(request_string)
-
+    
     # import file prefixes
     with open(SRC_PATH + '/' + 'file_prefixes.txt') as f:
         prefixes = []
@@ -184,7 +188,10 @@ def write_files(manifest_path, path=False, dels=True):
     json_post = {"ids": id_list}
 
     post = requests.post("https://gdc-api.nci.nih.gov/data", json=json_post)
-
+    
+    with open('data','w') as f:
+        f.write(post)
+        
     # Delete the manifest
     if dels:
         os.remove(manifest_path)
