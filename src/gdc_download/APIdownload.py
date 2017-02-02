@@ -190,7 +190,7 @@ def write_files(manifest_path, path=False, dels=True):
     post = requests.post("https://gdc-api.nci.nih.gov/data", json=json_post)
 
     with open(manifest_path[:-12] + '_data', 'w') as f:
-        f.write(post)
+        f.write(post.content)
 
     # Delete the manifest
     if dels:
@@ -217,7 +217,7 @@ def main():
             cancer_dir = a
         elif o == "--dest":
             dest = a
-        elif o == "--g_path":fdsafdafdafsdaf
+        elif o == "--g_path":
             gdc_path = a
         elif o == "--down_dir":
             download_dir = a    
