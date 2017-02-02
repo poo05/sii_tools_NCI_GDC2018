@@ -180,16 +180,14 @@ def write_files(manifest_path, path=False, dels=True):
     with open(manifest_path) as f:
         id_list = []
         for line in f:
-            if line[-1] == '\n':
-                id_list.append(line[:-1])
-            else:
-                id_list.append(line)
+            id_list.append(line.split('\t')[0])
+        id_list.pop(0)
     print(id_list[0])
     json_post = {"ids": id_list}
 
     post = requests.post("https://gdc-api.nci.nih.gov/data", json=json_post)
 
-    with open(manifest_path[:-12] + '_data', 'w') as f:
+    with open(manifest_path[:-12] + '_data.tar.gz', 'wb') as f:
         f.write(post.content)
 
 
@@ -231,9 +229,9 @@ def main():
         if cancer[-1] == '\n':
             cancer = cancer[:-1]
         name = re.match('.+-(.+)', cancer).group(1)
-        raw_manifests = download_other_manifests(cancer, path + '/' + name)
-        for manifest in raw_manifests:
-            write_metadata(manifest)
+        #raw_manifests = download_other_manifests(cancer, path + '/' + name)
+        #for manifest in raw_manifests:
+        #    write_metadata(manifest)
         all_manifest_path = download_manifest(cancer, path)
         write_files(all_manifest_path, path + '/' + name + '/' + name, dels=False)
 
