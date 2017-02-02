@@ -192,6 +192,7 @@ def write_files(manifest_path, path=False, dels=True):
     with open(manifest_path[:-12] + '_data', 'w') as f:
         f.write(post.content)
 
+
     # Delete the manifest
     if dels:
         os.remove(manifest_path)
