@@ -2,7 +2,6 @@ import getopt
 import json
 import os
 import re
-import subprocess
 import urllib
 
 import requests
@@ -17,19 +16,11 @@ with open(SRC_PATH + '/' + 'queries.json') as f:
 with open(SRC_PATH + '/' + 'cancers.txt') as f:
     CANCERS = [cancer for cancer in f]
 
-
-def meta():
-    """Fetch the expand fields from the NCI-GDC files/_mappping endpoint"""
-    mapping = requests.get('https://gdc-api.nci.nih.gov/files/_mapping')
-    json_field_map = mapping.json()
-    expand_fields = json_field_map["expand"]
-    expand_string = ','.join(expand_fields)
-    ret = expand_string
-    return ret
-
 # import the metadata fields normally seen
-expand_req_string = meta()
-
+with open(SRC_PATH + '/' + 'metadataFilters.json') as f:
+    meta_f = json.load(f)
+    FIELDS = ",".join(meta_f["fields"])
+    EXPAND = ",".join(meta_f["expand"])
 
 def download_manifest(cancer_project, dest):
     """ Downloads the manifest of relevant files from NCI-GDC via API for a particular cancer project
@@ -40,13 +31,15 @@ def download_manifest(cancer_project, dest):
     """
     # Create a copy of the constant that stores all required queries
     manifest_query = dict(JSON_QUERIES)
-    manifest_query['main_request']['content'].extend(JSON_QUERIES['requests'])
 
     # Replace the cancer filter placeholder with the cancer name
     manifest_query['main_request']['content'][0]["content"]['value'] = [cancer_project]
 
-    print( manifest_query['main_request']['content'][0])
+    print(manifest_query['main_request']['content'][0])
 
+    manifest_query['main_request']['content'].append({"op":"or", "content":[]})
+
+    manifest_query['main_request']['content'][-1]["content"].extend(JSON_QUERIES['requests'])
 
     # Create the http get url
     query = urllib.parse.quote(json.dumps(manifest_query['main_request']))
@@ -57,7 +50,7 @@ def download_manifest(cancer_project, dest):
 
     # Execute the http get url
     name = re.match('.+-(.+)', cancer_project)
-    file_name = dest + '/' + name.group(1) + '/' +name.group(1) + '.tsv'
+    file_name = dest + '/' + name.group(1) + '/' +name.group(1) + 'manifest.tsv'
     api_response = requests.get(query_url)
 
     # Write manifest to file
@@ -92,6 +85,9 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
     for i in JSON_QUERIES["requests"]:
         temp_query = dict(manifest_query)
         temp_query['content'].append(i)
+
+        #dealing with weird object inheritance!!!
+        temp_query['content'].pop(2)
 
         # Save json request as a quoted string
         json_string = json.dumps(temp_query)
@@ -146,21 +142,29 @@ def write_metadata(manifest_path, dels=True, path=None):
     # Metadata list
     meta_list = []
 
-    payload_json = {"filters":{"op":"in", "content": {
-    "field": "files.file_id", "value": file_ids}},"fields":expand_req_string,"size":"30000"}
+    payload_json = {
+        "filters": {
+            "op":"in",
+            "content": {
+                "field": "files.file_id",
+                "value": file_ids}
+        },
+        "fields":FIELDS,
+        "expand":EXPAND,
+        "size":"30000"
+    }
 
     # Use NCI-GDC API to search for metadata
-    response = requests.post(
+    request = requests.post(
         'https://gdc-api.nci.nih.gov/files', json=payload_json)
-    json_response = response.json()
-    meta_list.append(json_response)
+    json_response = request.json()
 
     if path != None:
         manifest_path = path + '/' + manifest_path[manifest_path.rfind('/'):]
 
     # Make pretty json file with metadata
     with open(manifest_path[:-4] + '.json', 'w') as f:
-        json.dump(meta_list, f, indent=2)
+        json.dump(json_response, f, indent=2)
 
     # delete the manifest
     if dels:
@@ -184,6 +188,9 @@ def write_files(manifest_path, path=False, dels=True):
     json_post = {"ids": id_list}
 
     post = requests.post("https://gdc-api.nci.nih.gov/data", json=json_post)
+
+    with open(manifest_path[:-12] + '_data', 'w') as f:
+        f.write(post)
 
     # Delete the manifest
     if dels:
@@ -210,7 +217,7 @@ def main():
             cancer_dir = a
         elif o == "--dest":
             dest = a
-        elif o == "--g_path":fdsafdafdafsdaf
+        elif o == "--g_path":
             gdc_path = a
         elif o == "--down_dir":
             download_dir = a    
