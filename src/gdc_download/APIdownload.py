@@ -1,3 +1,8 @@
+"""APIDownload
+
+This module uses the NCI-GDC API to download various important files and information.abs
+This is as specified in 
+"""
 import getopt
 import json
 import os
@@ -185,7 +190,7 @@ def write_files(manifest_path, dels=True):
     post = requests.post("https://gdc-api.nci.nih.gov/data", stream=True, json=json_post)
     print("Current File:" + manifest_path[:-12] + '_data.tar.gz')
     with open(manifest_path[:-12] + '_data.tar.gz', 'wb') as f:
-        for content in post.iter_content():
+        for content in post.iter_content(chunk_size=None):
             f.write(content)
 
 
@@ -205,7 +210,7 @@ def main():
         sys.exit(2)
     for o,a in opts:
         if o in ("-h","--help"):
-            print( 'downloadManifests.py -g --c_dir <directory of cancer list> ' + 
+            print( 'downloadManifests.py -g --c_dir <directory of cancer list> ' +
                     '--dest <directory to save the files>'+
                     ' --g_path <path of the gdc-client>')
         elif o == "-d":
@@ -217,7 +222,7 @@ def main():
         elif o == "--g_path":
             gdc_path = a
         elif o == "--down_dir":
-            download_dir = a    
+            download_dir = a
         else:
             assert False, "unhandled option"
     '''
