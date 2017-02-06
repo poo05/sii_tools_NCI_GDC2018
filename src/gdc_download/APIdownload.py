@@ -139,9 +139,6 @@ def write_metadata(manifest_path, dels=True, path=None):
         file_ids = [i[0:i.find('\t')] for i in f]
         file_ids.pop()
 
-    # Metadata list
-    meta_list = []
-
     payload_json = {
         "filters": {
             "op":"in",
@@ -171,7 +168,7 @@ def write_metadata(manifest_path, dels=True, path=None):
         os.remove(manifest_path)
 
 
-def write_files(manifest_path, path=False, dels=True):
+def write_files(manifest_path, dels=True):
     """ Writes files from manifest
     """
 
@@ -185,10 +182,11 @@ def write_files(manifest_path, path=False, dels=True):
     print(id_list[0])
     json_post = {"ids": id_list}
 
-    post = requests.post("https://gdc-api.nci.nih.gov/data", json=json_post)
+    post = requests.post("https://gdc-api.nci.nih.gov/data", stream=True, json=json_post)
 
     with open(manifest_path[:-12] + '_data.tar.gz', 'wb') as f:
-        f.write(post.content)
+        for content in post.iter_content:
+            f.write(content)
 
 
     # Delete the manifest
