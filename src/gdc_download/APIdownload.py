@@ -139,10 +139,13 @@ def write_metadata(manifest_path, dels=True, path=None):
     manifest_path -- string of the path where the manifest is stored
     path -- an alternative path to which to save the json metadata
     """
+    
+    print(manifest_path[:-4] + '.json')
+    
     # Get the file uuids from manifest
     with open(manifest_path) as f:
         file_ids = [i[0:i.find('\t')] for i in f]
-        file_ids.pop()
+        print(file_ids.pop(0))
 
     payload_json = {
         "filters": {
@@ -158,15 +161,16 @@ def write_metadata(manifest_path, dels=True, path=None):
 
     # Use NCI-GDC API to search for metadata
     request = requests.post(
-        'https://gdc-api.nci.nih.gov/files', json=payload_json)
-    json_response = request.json()
+        'https://gdc-api.nci.nih.gov/files', stream=True, json=payload_json)
+    with open(manifest_path[:-4] + '.json', 'wb') as f:
+        for content in request.iter_content():
+            f.write(content)
 
     if path != None:
         manifest_path = path + '/' + manifest_path[manifest_path.rfind('/'):]
 
     # Make pretty json file with metadata
-    with open(manifest_path[:-4] + '.json', 'w') as f:
-        json.dump(json_response, f, indent=2)
+    
 
     # delete the manifest
     if dels:
@@ -197,7 +201,6 @@ def write_files(manifest_path, dels=True):
     # Delete the manifest
     if dels:
         os.remove(manifest_path)
-
 
 def main():
     '''
@@ -235,8 +238,8 @@ def main():
         raw_manifests = download_other_manifests(cancer, path + '/' + name)
         for manifest in raw_manifests:
             write_metadata(manifest)
-        all_manifest_path = download_manifest(cancer, path)
-        write_files(all_manifest_path, dels=False)
+        #all_manifest_path = download_manifest(cancer, path)
+        #write_files(all_manifest_path, dels=False)
 
 if __name__ == "__main__":
     main()
