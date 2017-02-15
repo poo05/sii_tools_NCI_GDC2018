@@ -19,15 +19,15 @@ public class Main {
 		
 		ParseCmd cmd = new ParseCmd.Builder()
 				.help(usage)
-				.parm("-i", "").req()
+				.parm("-i", "C:/Users/TREY/Desktop/BLCA")
 				.parm("-o", "")
 				.parm("-collapse", "1")
 				.parm("-cohortname","src")
 				.parm("-walk","0")
 				.parm("-assembly","hg38")
 				.parm("-log","1")
-				.parm("-filenames","clinical=clinical.tsv;mirna=mirna.tsv;gene_expr=gene_expr.tsv;cnv=cnv.tsv;snp=snp.tsv;somsnp=somsnp.tsv")
-				.parm("-debug","0")
+				.parm("-filenames","clinical=clinical.tsv;mirna=mirna.tsv;gene_expr=gene_expr.tsv;cnv=cnv.tsv;snp=snp.tsv;somsnp=somsnp.tsv;meth=meth.tsv")
+				.parm("-debug","1")
 				.build();
 		Map<String,String> cmdMap = new HashMap<String,String>();
 		String parsingErr = cmd.validate(args);
@@ -52,8 +52,10 @@ public class Main {
 			
 			CMainProcessor mainproc = new CMainProcessor();
 			mainproc.Process(cmdArgs);
+			System.out.println("Done processing.");
 		}
 		else {System.out.println(parsingErr); System.exit(-10);}
+		System.out.println("Program terminated :)");
 	}
 
 }

@@ -42,6 +42,8 @@ public class COutputTemplates {
 
 		outputTemplate.put("somsnp.std", "CHROM,POS,ID,REF,ALT,QUAL,FILTER,Allele,Consequence,IMPACT,SYMBOL,Gene,Feature_type,Feature,BIOTYPE,EXON,FORMAT,NORMAL,TUMOR");
 		
+		outputTemplate.put("meth.std", "position_type,chrom,start,stop,hugo_symbol,enst_id,,composite_ref_id,value_type,value,addtl_info");
+		
 		skiplineTemplate.put("snp.std", "##");
 		skiplineTemplate.put("somsnp.std", "##");
 	}

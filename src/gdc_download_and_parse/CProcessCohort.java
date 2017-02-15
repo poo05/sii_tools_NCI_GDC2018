@@ -112,6 +112,15 @@ public class CProcessCohort {
 					JSONArray jsonary =  new JSONObject(jsonFile).getJSONArray("root");
 					_processDataType(jsonary, curCohort, curCmdMap, curjustfilename, "general.sample,somsnp.std", "somsnp.std", "somsnp");
 				}
+				// methylation
+				if(curfile.startsWith("meth_metadata")) {
+					String curjustfilename = curfile;
+					curfile = curCmdMap.walk==1?curCmdMap.inputFolder+"/"+curCohort+"/"+curfile:curCmdMap.inputFolder+"/"+curfile;
+					String jsonFile = filehandler.readFile(curfile);
+					jsonFile = "{\"root\":"+jsonFile+"}";	// deal with vagaries of NCI starting with an array instead of a JSON object
+					JSONArray jsonary =  new JSONObject(jsonFile).getJSONArray("root");
+					_processDataType(jsonary, curCohort, curCmdMap, curjustfilename, "general.sample,meth.std", "meth.std", "meth");
+				}
 				
 			}
 			// process CNV
@@ -154,6 +163,7 @@ public class CProcessCohort {
 					if (br!=null){
 						// remember that we are passing fileOut to itself on calls other than the first - so do NOT use +=
 						String lineOut =_getOutputLine(br.filename+"|"+curFile, curCohort, curAssembly, outputFileType, ae.getString("entity_submitter_id"),ae.getString("entity_submitter_id"), ae, dataTypeLine,"", false);
+						lineOut = lineOut.replaceAll("null", " ");
 						String ln = filehandler.readLineFromBufferedReader(br.buffread, false);
 						// are we supposed to skip any lines for this type? - we only process if skipLine=="" OR skipLine!="" but the line doesn't start with skipLine value
 						while(skipLine!="" && (ln.substring(0, skipLine.length()).equals(skipLine))){
@@ -190,12 +200,41 @@ public class CProcessCohort {
 											correctedLn[6] +"\t" + n +"\t" + correctedLn[8] +"\t" + correctedLn[9] +"\t" + correctedLn[10];      
 									
 									break;
+								case "meth": // really weird file structure, need multiple rows per line
+									// 11 entries, we'll use all except pos 6 (gene type) and pos 8 (Position_to_TSS)
+									correctedLn = ln.split("\t");
+									// make sure we have a correct id, beta value, and a location
+									if ((correctedLn[0].startsWith("cg")||correctedLn[0].startsWith("rs")) && !correctedLn[1].equals("NA") && !correctedLn[2].equals("*")) {
+										// get start/end data for cpg region and cpg island
+										String lnrest = correctedLn[0] + "\t" + "beta_value" + "\t" + correctedLn[1] + "\t" + correctedLn[10];
+										String lnreg = "region" + "\t" + correctedLn[2] + "\t" + correctedLn[3] + "\t" + correctedLn[4];
+										String[] cgic = correctedLn[9].split(":");
+										String lncgi = "cgi" + "\t" + cgic[1] + "\t" + cgic[2].split("-")[0] + "\t" + cgic[2].split("-")[1];
+										// only two rows per unique gene (reg & cgi), includes 1st transcript for ENS)
+										String[] genes = correctedLn[5].split(";");
+										String[] transcripts = correctedLn[7].split(";");
+										String lngene;
+										if (genes.length > 0) {
+											for (int j = 0; j < genes.length; j++) {
+												if(j==0 || !genes[j].equals(genes[j-1])) {
+													String[] ts = transcripts[j].split("\\.");
+													if (ts.length>1)
+														lngene = genes[j] + "\t" + ts[0];
+													else
+														lngene = genes[j] + "\t" + transcripts[j];
+													filehandler.writeLineToBufferedWriter(buffwrite, lineOut +"\t"+lnreg +"\t"+lngene+"\t"+lnrest, false);
+													filehandler.writeLineToBufferedWriter(buffwrite, lineOut +"\t"+lncgi +"\t"+lngene+"\t"+lnrest, false);
+												}
+											}
+										}
+									}
+									break;
 								default:
 									break;
 							}
-							lineOut = lineOut.replaceAll("null", " ");
-
-							filehandler.writeLineToBufferedWriter(buffwrite, lineOut +"\t"+ln, false);
+							
+							if(!outputFileType.equals("meth"))
+								filehandler.writeLineToBufferedWriter(buffwrite, lineOut +"\t"+ln, false);
 							ln = filehandler.readLineFromBufferedReader(br.buffread, false);
 						}
 						filehandler.readLineFromBufferedReader(br.buffread, true);
