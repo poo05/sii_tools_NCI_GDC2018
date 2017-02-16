@@ -290,12 +290,12 @@ def main():
         print(cancer)
         if cancer[-1] == '\n':
             cancer = cancer[:-1]
-        #name = re.match('.+-(.+)', cancer).group(1)
-        #raw_manifests = download_other_manifests(cancer, path + '/' + name)
-        all_manifest_path = download_manifest(cancer, path)
-        #for manifest in raw_manifests:
-        #    write_metadata(manifest)
-        write_files(all_manifest_path, "C:/Users/localadmin/Downloads/gdc-client.exe", dels=False)
+        name = re.match('.+-(.+)', cancer).group(1)
+        raw_manifests = download_other_manifests(cancer, path + '/' + name)
+        write_files_from_list(raw_manifests)
+        
+        for manifest in raw_manifests:
+            write_metadata(manifest)
 
 if __name__ == "__main__":
     main()
