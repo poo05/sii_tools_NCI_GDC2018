@@ -133,13 +133,14 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
     print(prefixes)
     for prefix, query in zip(prefixes, manifests):
         file_name = dest + '/' + prefix + '_metadata.' + name + '.tsv'
-        print(file_name)
         response = requests.get(query)
         #json_response = response.json()
         #print("fubar")
         # Write the response to a file
         with open(file_name, 'w') as manifest:
             manifest.write(response.text)
+            
+        print(file_name+'\t'+os.path.getsize(file_name))
 
     return file_names
 
