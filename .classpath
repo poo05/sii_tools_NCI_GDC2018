@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/Projects/Development/gdc_download_and_parse/lib/parsecmd-0.0.93.jar"/>
-	<classpathentry kind="lib" path="C:/Projects/Development/gdc_download_and_parse/lib/json-20160810.jar"/>
-	<classpathentry kind="lib" path="C:/Projects/Development/gdc_download_and_parse/lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/parsecmd-0.0.93.jar"/>
+	<classpathentry kind="lib" path="lib/json-20160810.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/zip4j_1.3.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
