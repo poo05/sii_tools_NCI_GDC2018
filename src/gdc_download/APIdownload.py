@@ -99,20 +99,17 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
     manifest_query = dict(JSON_QUERIES)
     manifest_query['main_request']['content'][0]['content']['value'] = [cancer_project]
     manifest_query = manifest_query['main_request']
-    
-    counter = True
-    
+        
     # Instantiate requests for each type of manifest
     for i in JSON_QUERIES["requests"]:
         temp_query = dict(manifest_query)
         temp_query['content'].append(i)
 
         #dealing with weird object inheritance!!!
-        if counter:
-            counter=False
-        else:
+        if len(temp_query['content'])>3:
             popped = temp_query['content'].pop(2)
-            print(popped)
+            #print(popped)
+        assert len(temp_query['content']) == 3
 
         # Save json request as a quoted string
         json_string = json.dumps(temp_query)
@@ -297,7 +294,12 @@ def main():
         print(cancer)
         if cancer[-1] == '\n':
             cancer = cancer[:-1]
-        name = re.match('.+-(.+)', cancer).group(1)
+        names = re.match('(.+)-(.+)', cancer)
+        project = names.group(1)
+        if project == "TARGET":
+            continue
+        
+        name = names.group(2)
         raw_manifests = download_other_manifests(cancer, path + '/' + name)
         write_files_from_list(raw_manifests)
         
