@@ -75,7 +75,7 @@
                 {
                     "op": "in",
                     "content": {
-                        "field": "files.data_category",
+                        "field": "files.data_type",
                         "value": [
                             "Gene Expression Quantification"
                         ]
@@ -98,7 +98,7 @@
                 {
                     "op": "in",
                     "content": {
-                        "field": "files.data_category",
+                        "field": "files.data_type",
                         "value": [
                             "miRNA Expression Quantification"
                         ]
