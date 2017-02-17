@@ -29,6 +29,15 @@ with open(SRC_PATH + '/' + 'metadataFilters.json') as filter_f:
     FIELDS = ",".join(meta_f["fields"])
     EXPAND = ",".join(meta_f["expand"])
 
+# import file prefixes
+with open(SRC_PATH + '/' + 'file_prefixes.txt') as prefix_file:
+    PREFIXES = []
+    for prefix in prefix_file:
+        if prefix[-1] == '\n':
+            PREFIXES.append(prefix[:-1])
+        else:
+            PREFIXES.append(prefix)
+
 def download_manifest(cancer_project, dest):
     """ Downloads the manifest of relevant files from NCI-GDC
         via API for a particular cancer project
@@ -99,14 +108,14 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
     manifest_query = dict(JSON_QUERIES)
     manifest_query['main_request']['content'][0]['content']['value'] = [cancer_project]
     manifest_query = manifest_query['main_request']
-        
+
     # Instantiate requests for each type of manifest
     for i in JSON_QUERIES["requests"]:
         temp_query = dict(manifest_query)
         temp_query['content'].append(i)
 
         #dealing with weird object inheritance!!!
-        if len(temp_query['content'])>3:
+        if len(temp_query['content']) > 3:
             popped = temp_query['content'].pop(2)
             #print(popped)
         assert len(temp_query['content']) == 3
@@ -116,15 +125,6 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
         request_string = urllib.parse.quote(json_string)
         manifests.append(request_string)
 
-    # import file prefixes
-    with open(SRC_PATH + '/' + 'file_prefixes.txt') as prefix_file:
-        prefixes = []
-        for prefix in prefix_file:
-            if prefix[-1] == '\n':
-                prefixes.append(prefix[:-1])
-            else:
-                prefixes.append(prefix)
-
     # Store filenames
     file_names = []
 
@@ -133,8 +133,7 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
                  query + '&size=30000&return_type=manifest'
                  for query in manifests]
 
-    print(prefixes)
-    for prefix, query in zip(prefixes, manifests):
+    for prefix, query in zip(PREFIXES, manifests):
         file_name = dest + '/' + prefix + '_metadata.' + name + '.tsv'
         response = requests.get(query)
         #json_response = response.json()
@@ -142,7 +141,7 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
         # Write the response to a file
         with open(file_name, 'w') as manifest:
             manifest.write(response.text)
-            
+
         print(file_name+'\t'+str(os.path.getsize(file_name)))
 
     return file_names
@@ -183,9 +182,9 @@ def write_metadata(manifest_path, dels=True, path=None):
             f.write(content)
 
     with open(manifest_path[:-4] + '.json', 'w') as f:
-        a = json.load(f)
-        b = a["data"]["hits"]
-        json.dump(b, f, indent=2)
+        raw = json.load(f)
+        polished = raw["data"]["hits"]
+        json.dump(polished, f, indent=2)
     if path != None:
         manifest_path = path + '/' + manifest_path[manifest_path.rfind('/'):]
 
@@ -236,9 +235,9 @@ def write_files_from_list(manifest_list, client_path=False, use_API=True):
     if use_API:
         for manifest_path in manifest_list:
             #Download Files using the gdc-API post method
-            with open(manifest_path) as f:
+            with open(manifest_path) as manifest:
                 id_list = []
-                for line in f:
+                for line in manifest:
                     id_list.append(line.split('\t')[0])
                 id_list.pop(0)
             print(id_list[0])
@@ -290,6 +289,9 @@ def main():
             assert False, "unhandled option"
     '''
     path = '//sii-nas3/Data/NCI_GDC'
+
+    cancer_len = len(CANCERS)
+    num_cancer = 0
     for cancer in CANCERS:
         print(cancer)
         if cancer[-1] == '\n':
@@ -298,13 +300,15 @@ def main():
         project = names.group(1)
         if project == "TARGET":
             continue
-        
+
         name = names.group(2)
         raw_manifests = download_other_manifests(cancer, path + '/' + name)
         write_files_from_list(raw_manifests)
-        
+
         for manifest in raw_manifests:
             write_metadata(manifest)
+
+        print("Finished " + str(num_cancer) + " out of " + cancer_len)
 
 if __name__ == "__main__":
     main()
