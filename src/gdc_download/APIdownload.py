@@ -290,25 +290,42 @@ def main():
     '''
     path = '//sii-nas3/Data/NCI_GDC'
 
-    cancer_len = len(CANCERS)
-    num_cancer = 0
-    for cancer in CANCERS:
-        print(cancer)
-        if cancer[-1] == '\n':
-            cancer = cancer[:-1]
-        names = re.match('(.+)-(.+)', cancer)
-        project = names.group(1)
-        if project == "TARGET":
-            continue
+#    cancer_len = len(CANCERS)
+#    num_cancer = 0
+#    for cancer in CANCERS:
+#        print(cancer)
+#        if cancer[-1] == '\n':
+#            cancer = cancer[:-1]
+#        names = re.match('(.+)-(.+)', cancer)
+#        project = names.group(1)
+#        if project == "TARGET":
+#            continue
+#
+#        name = names.group(2)
+#        raw_manifests = download_other_manifests(cancer, path + '/' + name)
+#        write_files_from_list(raw_manifests)
+#
+#        for manifest in raw_manifests:
+#            write_metadata(manifest)
+#
+#        print("Finished " + str(num_cancer) + " out of " + cancer_len)
 
-        name = names.group(2)
-        raw_manifests = download_other_manifests(cancer, path + '/' + name)
-        write_files_from_list(raw_manifests)
+    cancers_dirs = os.listdir(path)
+    manifests=[]
 
-        for manifest in raw_manifests:
-            write_metadata(manifest)
+    for cancer_dir in cancers_dirs:
+        print(cancer_dir)
+        cancer_files = os.listdir(path+'/'+cancer_dir)
+        re_search = re.compile(".+_metadata\."+cancer_dir+"\.tsv")
+        for cancer_file in cancer_files:
+            if (re_search.match(cancer_file)):
+                manifests.append(path+'/'+cancer_dir+'/'+cancer_file)
 
-        print("Finished " + str(num_cancer) + " out of " + cancer_len)
+    print(manifests)
+    
+    write_files_from_list(manifests,
+    "C:/Users/localadmin/Downloads/gdc-client.exe",
+    False)
 
 if __name__ == "__main__":
     main()
