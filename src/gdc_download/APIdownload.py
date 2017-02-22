@@ -262,7 +262,7 @@ def write_files_from_list(manifest_list, client_path=False, use_API=True):
 
 def chk_files(directory, manifest):
     with open(manifest) as mani:
-        uuids =  [i.split("\t")[0] for i in mani.readlines()]
+        uuids = [i.split("\t")[0] for i in mani.readlines()]
         if uuids[0] == "{":
             os.remove(manifest)
         uuids.pop(0)
@@ -276,22 +276,15 @@ def chk_files(directory, manifest):
     with open(manifest) as og:
         with open(manifest+".new") as new:
             lines = og.readlines()
-            newlines=list(lines)
+            newlines = list(lines)
             for line in lines:
                 if line.split("\t")[0] not in uuids:
                     newlines.remove(line.split("\t")[0])
-            newlines.insert(0,lines[0])
+            newlines.insert(0, lines[0])
             new.writelines(newlines)
-    
+
     os.remove(manifest)
     os.rename(manifest+".new", manifest)
-
-def write_new_manifest(uuids, manifest):
-    with open(manifest) as mani:
-        mani.readline()
-        for line in mani:
-            if line.split("\t")[0] not in uuids:
-                
 
 def main():
     '''
@@ -344,21 +337,21 @@ def main():
 #        print("Finished " + str(num_cancer) + " out of " + cancer_len)
 
     cancers_dirs = os.listdir(path)
-    manifests=[]
+    manifests = []
 
     for cancer_dir in cancers_dirs:
         print(cancer_dir)
         cancer_files = os.listdir(path+'/'+cancer_dir)
         re_search = re.compile(".+_metadata\."+cancer_dir+"\.tsv")
         for cancer_file in cancer_files:
-            if (re_search.match(cancer_file)):
+            if re_search.match(cancer_file):
                 manifests.append(path+'/'+cancer_dir+'/'+cancer_file)
 
     print(manifests)
-    
+
     write_files_from_list(manifests,
-    "C:/Users/localadmin/Downloads/gdc-client.exe",
-    False)
+                          "C:/Users/localadmin/Downloads/gdc-client.exe",
+                          False)
 
 if __name__ == "__main__":
     main()
