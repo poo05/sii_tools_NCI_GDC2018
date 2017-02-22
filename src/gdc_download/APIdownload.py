@@ -260,6 +260,36 @@ def write_files_from_list(manifest_list, client_path=False, use_API=True):
                     "--no-annotations", "-m", manifest_path])
             print(complete_object)
 
+def chk_files(directory, manifest):
+    with open(manifest) as mani:
+        uuids =  [i.split("\t")[0] for i in mani.readlines()]
+        if uuids[0] == "{":
+            os.remove(manifest)
+        uuids.pop(0)
+    with os.scandir(directory) as it:
+        for file in it:
+            if file.name in uuids:
+                assert file.is_dir()
+                f_list = os.listdir(file.path)
+                if not f_list[0].endswith(".partial"):
+                    uuids.remove(file.name)
+    with open(manifest) as og:
+        with open(manifest+".new") as new:
+            lines = og.readlines()
+            newlines=list(lines)
+            for line in lines:
+                if line.split("\t")[0] not in uuids:
+                    newlines.remove(line.split("\t")[0])
+            newlines.insert(0,lines[0])
+            new.writelines(newlines)
+
+def write_new_manifest(uuids, manifest):
+    with open(manifest) as mani:
+        mani.readline()
+        for line in mani:
+            if line.split("\t")[0] not in uuids:
+                
+
 def main():
     '''
     try:
