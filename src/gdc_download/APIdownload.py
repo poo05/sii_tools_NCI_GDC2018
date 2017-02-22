@@ -282,6 +282,9 @@ def chk_files(directory, manifest):
                     newlines.remove(line.split("\t")[0])
             newlines.insert(0,lines[0])
             new.writelines(newlines)
+    
+    os.remove(manifest)
+    os.rename(manifest+".new", manifest)
 
 def write_new_manifest(uuids, manifest):
     with open(manifest) as mani:
