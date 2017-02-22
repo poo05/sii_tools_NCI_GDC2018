@@ -342,7 +342,7 @@ def main():
     for cancer_dir in cancers_dirs:
         print(cancer_dir)
         cancer_files = os.listdir(path+'/'+cancer_dir)
-        re_search = re.compile(".+_metadata\."+cancer_dir+"\.tsv")
+        re_search = re.compile(".+_metadata."+cancer_dir+".tsv")
         for cancer_file in cancer_files:
             if re_search.match(cancer_file):
                 manifests.append(path+'/'+cancer_dir+'/'+cancer_file)
