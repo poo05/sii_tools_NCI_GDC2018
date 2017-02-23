@@ -116,7 +116,7 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
 
         #dealing with weird object inheritance!!!
         if len(temp_query['content']) > 3:
-            popped = temp_query['content'].pop(2)
+            temp_query['content'].pop(2)
             #print(popped)
         assert len(temp_query['content']) == 3
 
