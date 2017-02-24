@@ -194,12 +194,12 @@ def write_metadata(manifest_path, dels=True, path=None):
         os.remove(manifest_path)
 
 
-def write_files(manifest_path, client_path=False, dels=True, use_API=True):
+def write_files(manifest_path, client_path=False, dels=True, use_api=True):
     """ Use GDC Client instead of API b/c connection reset
     """
 
     print(manifest_path)
-    if use_API:
+    if use_api:
         #Download Files using the gdc-API post method
         with open(manifest_path) as f:
             id_list = []
@@ -289,7 +289,8 @@ def chk_files(directory, manifest):
             if file.name in uuids:
                 assert file.is_dir()
                 f_list = os.listdir(file.path)
-                if f_list[0].endswith(".partial") or str(os.stat(file.path + '/' + f_list[0]).size()) != uuids[file.name]:
+                file_size = os.stat(file.path + '/' + f_list[0]).size()
+                if f_list[0].endswith(".partial") or str(file_size) != uuids[file.name]:
                     uuids.pop(file.name)
     with open(manifest) as og:
         with open(manifest+".new") as new:
