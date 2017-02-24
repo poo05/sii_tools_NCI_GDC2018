@@ -80,7 +80,8 @@ def download_manifest(cancer_project, dest):
     return file_name
 
 def assemble_manifest(manifest_list, cancer_project, dest):
-    # Assemble a complete manifest from all the smaller manifests
+    """Assemble a complete manifest from all the smaller manifests
+    """
     name = re.match('.+-(.+)', cancer_project)
     file_name = dest + '/' + name.group(1) + '/' +name.group(1) + 'manifest.tsv'
     for manifest in manifest_list:
@@ -228,11 +229,16 @@ def write_files(manifest_path, client_path=False, dels=True, use_API=True):
     if dels:
         os.remove(manifest_path)
 
-def write_files_from_list(manifest_list, client_path=False, use_API=True):
-    """ Use GDC Client instead of API b/c connection reset
+def write_files_from_list(manifest_list, client_path=False, use_api=True):
+    """ Write files from NCI-GDC from a list of manifests
+
+    Keyword Arguments
+    manifest_list -- list of manifest paths
+    client_path -- path of the GDC Data Download Client
+    use_api -- whether to use the API or GDC-Client
     """
 
-    if use_API:
+    if use_api:
         for manifest_path in manifest_list:
             #Download Files using the gdc-API post method
             with open(manifest_path) as manifest:
@@ -261,26 +267,38 @@ def write_files_from_list(manifest_list, client_path=False, use_API=True):
             print(complete_object)
 
 def chk_files(directory, manifest):
+    """Rewrite manifests to reflect file inconsistencies
+    Implemented due to inconsistencies of files
+
+    Keyword Arguments
+    directory -- the directory where the files reside
+    manifest -- path of the manifest to be modified
+    """
     with open(manifest) as mani:
-        uuids = [i.split("\t")[0] for i in mani.readlines()]
-        if uuids[0] == "{":
+        spl_lines = [i.split("\t") for i in mani.readlines()]
+        try:
+            first_line = spl_lines[0]
+            uuids = dict([(spl_line[0],spl_line[-2]) for spl_line in spl_lines])
+            uuids.pop('id')
+        except IndexError:
+            mani.close()
             os.remove(manifest)
-        uuids.pop(0)
-    with os.scandir(directory) as it:
-        for file in it:
+            return
+    with os.scandir(directory) as open_dir:
+        for file in open_dir:
             if file.name in uuids:
                 assert file.is_dir()
                 f_list = os.listdir(file.path)
-                if not f_list[0].endswith(".partial"):
-                    uuids.remove(file.name)
+                if (f_list[0].endswith(".partial")) or (str(os.stat(file.path + '/' + f_list[0]).size()) != uuids[file.name]):
+                    uuids.pop(file.name)
     with open(manifest) as og:
         with open(manifest+".new") as new:
             lines = og.readlines()
-            newlines = list(lines)
+            newlines = [first_line]
+            newlines.extend(lines)
             for line in lines:
                 if line.split("\t")[0] not in uuids:
-                    newlines.remove(line.split("\t")[0])
-            newlines.insert(0, lines[0])
+                    newlines.remove(line)
             new.writelines(newlines)
 
     os.remove(manifest)
@@ -292,13 +310,13 @@ def main():
         opts, args = getopt.getopt(sys.argv[1:],"hgd",["help","c_dir=","dest=",
                                    "g_path=","m_path=", "d_dir="])
     except getopt.GetoptError:
-        print( 'downloadManifests.py -g --c_dir <directory of cancer list> '
+        print( 'APIdownload.py -g --c_dir <directory of cancer list> '
               +'--dest <directory to save the files>'+
-              ' --g_path <path of the gdc-client> --m_path <path of lastest mozilla browser>')
+              ' --g_path <path of the gdc-client>')
         sys.exit(2)
     for o,a in opts:
         if o in ("-h","--help"):
-            print( 'downloadManifests.py -g --c_dir <directory of cancer list> ' +
+            print( 'APIdownload.py -g --c_dir <directory of cancer list> ' +
                     '--dest <directory to save the files>'+
                     ' --g_path <path of the gdc-client>')
         elif o == "-d":
