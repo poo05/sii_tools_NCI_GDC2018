@@ -278,7 +278,7 @@ def chk_files(directory, manifest):
         spl_lines = [i.split("\t") for i in mani.readlines()]
         try:
             first_line = spl_lines[0]
-            uuids = dict([(spl_line[0],spl_line[-2]) for spl_line in spl_lines])
+            uuids = dict([(spl_line[0], spl_line[-2]) for spl_line in spl_lines])
             uuids.pop('id')
         except IndexError:
             mani.close()
@@ -289,7 +289,7 @@ def chk_files(directory, manifest):
             if file.name in uuids:
                 assert file.is_dir()
                 f_list = os.listdir(file.path)
-                if (f_list[0].endswith(".partial")) or (str(os.stat(file.path + '/' + f_list[0]).size()) != uuids[file.name]):
+                if f_list[0].endswith(".partial") or str(os.stat(file.path + '/' + f_list[0]).size()) != uuids[file.name]:
                     uuids.pop(file.name)
     with open(manifest) as og:
         with open(manifest+".new") as new:
