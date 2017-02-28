@@ -10,6 +10,7 @@ import os
 import re
 import subprocess
 import urllib
+from tarfile import TarFile, TarError
 
 import requests
 
@@ -122,8 +123,7 @@ def download_other_manifests(cancer_project, dest, create_dir=False):
         assert len(temp_query['content']) == 3
 
         # Save json request as a quoted string
-        json_string = json.dumps(temp_query)
-        request_string = urllib.parse.quote(json_string)
+        request_string = urllib.parse.quote(json.dumps(temp_query))
         manifests.append(request_string)
 
     # Store filenames
@@ -178,14 +178,14 @@ def write_metadata(manifest_path, dels=True, path=None):
     # Use NCI-GDC API to search for metadata
     request = requests.post(
         'https://gdc-api.nci.nih.gov/files', stream=True, json=payload_json)
-    with open(manifest_path[:-4] + '.json', 'wb') as f:
+    with open(manifest_path[:-4] + '.json', 'wb') as meta1:
         for content in request.iter_content():
-            f.write(content)
+            meta1.write(content)
 
-    with open(manifest_path[:-4] + '.json', 'w') as f:
-        raw = json.load(f)
+    with open(manifest_path[:-4] + '.json', 'w') as meta2:
+        raw = json.load(meta2)
         polished = raw["data"]["hits"]
-        json.dump(polished, f, indent=2)
+        json.dump(polished, meta2, indent=2)
     if path != None:
         manifest_path = path + '/' + manifest_path[manifest_path.rfind('/'):]
 
@@ -247,15 +247,25 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                     id_list.append(line.split('\t')[0])
                 id_list.pop(0)
             print(id_list[0])
+            if id_list[0] == '  "message": "internal server error"':
+                os.remove(manifest_path)
+                continue
+
             json_posts = [{"ids": id_list[i:i+30]} for i in range(0, len(id_list), 30)]
-            
+
             num_gen = iter_nums(0)
-            
+
             for json_post in json_posts:
-                post = requests.post("https://gdc-api.nci.nih.gov/data", stream=True, json=json_post)
                 num = next(num_gen)
-                print("Current File:" + manifest_path[:-12] + num + '_data.tar.gz')
-                #print(post.headers)
+                name = manifest_path[:-12] + num + '_data.tar.gz'
+                print("Current File:" + name)
+                if os.path.isfile(name):
+                    if chk_tar(name):
+                        continue
+                post = requests.post("https://gdc-api.nci.nih.gov/data",
+                                     stream=True,
+                                     json=json_post
+                                    )
                 with open(manifest_path[:-12] + num + '_data.tar.gz', 'wb') as zip_file:
                     for content in post.iter_content():
                         zip_file.write(content)
@@ -269,6 +279,18 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                     "--no-file-md5sum", "--no-related-files",
                     "--no-annotations", "-m", manifest_path])
             print(complete_object)
+
+def chk_tar(tar_file):
+    """Check tar.gz files to see whether they have file integrity"""
+    try:
+        tarball = TarFile.open(tar_file,"r:gz")
+        tarball.getnames()
+        tarball.close()
+        return True
+    except EOFError:
+        return False
+    except TarError:
+        return True
 
 def iter_nums(start):
     "Generate numbers from start"
