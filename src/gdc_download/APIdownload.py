@@ -11,6 +11,7 @@ import re
 import subprocess
 import urllib
 from tarfile import TarFile, TarError
+import time
 
 import requests
 
@@ -276,6 +277,7 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                                 zip_file.write(content)
                     except:
                         print("Free the internet")
+                        time.sleep(60)
                         continue
                     break
     else:
