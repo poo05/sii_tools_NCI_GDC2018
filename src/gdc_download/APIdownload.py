@@ -263,9 +263,10 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                         print("Current File:" + name)
                         if os.path.isfile(name):
                             if chk_tar(name):
-                                continue
+                                break
                             else:
                                 os.remove(name)
+                                break
                         post = requests.post("https://gdc-api.nci.nih.gov/data",
                                              stream=True,
                                              json=json_post
