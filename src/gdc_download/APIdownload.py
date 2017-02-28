@@ -257,18 +257,26 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
 
             for json_post in json_posts:
                 num = next(num_gen)
-                name = manifest_path[:-12] + num + '_data.tar.gz'
-                print("Current File:" + name)
-                if os.path.isfile(name):
-                    if chk_tar(name):
+                while True:
+                    try:
+                        name = manifest_path[:-12] + num + '_data.tar.gz'
+                        print("Current File:" + name)
+                        if os.path.isfile(name):
+                            if chk_tar(name):
+                                continue
+                            else:
+                                os.remove(name)
+                        post = requests.post("https://gdc-api.nci.nih.gov/data",
+                                             stream=True,
+                                             json=json_post
+                                            )
+                        with open(manifest_path[:-12] + num + '_data.tar.gz', 'wb') as zip_file:
+                            for content in post.iter_content():
+                                zip_file.write(content)
+                    except:
+                        print("Free the internet")
                         continue
-                post = requests.post("https://gdc-api.nci.nih.gov/data",
-                                     stream=True,
-                                     json=json_post
-                                    )
-                with open(manifest_path[:-12] + num + '_data.tar.gz', 'wb') as zip_file:
-                    for content in post.iter_content():
-                        zip_file.write(content)
+                    break
     else:
         for manifest_path in manifest_list:
             #Download via GDC-client
