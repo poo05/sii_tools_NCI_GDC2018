@@ -247,14 +247,18 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                     id_list.append(line.split('\t')[0])
                 id_list.pop(0)
             print(id_list[0])
-            json_post = {"ids": id_list}
-
-            post = requests.post("https://gdc-api.nci.nih.gov/data", stream=True, json=json_post)
-            print("Current File:" + manifest_path[:-12] + '_data.tar.gz')
-            print(post.headers)
-            with open(manifest_path[:-12] + '_data.tar.gz', 'wb') as zip_file:
-                for content in post.iter_content():
-                    zip_file.write(content)
+            json_posts = [{"ids": id_list[i:i+30]} for i in range(0, len(id_list), 30)]
+            
+            num_gen = iter_nums(0)
+            
+            for json_post in json_posts:
+                post = requests.post("https://gdc-api.nci.nih.gov/data", stream=True, json=json_post)
+                num = next(num_gen)
+                print("Current File:" + manifest_path[:-12] + num + '_data.tar.gz')
+                #print(post.headers)
+                with open(manifest_path[:-12] + num + '_data.tar.gz', 'wb') as zip_file:
+                    for content in post.iter_content():
+                        zip_file.write(content)
     else:
         for manifest_path in manifest_list:
             #Download via GDC-client
@@ -265,6 +269,12 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                     "--no-file-md5sum", "--no-related-files",
                     "--no-annotations", "-m", manifest_path])
             print(complete_object)
+
+def iter_nums(start):
+    "Generate numbers from start"
+    while True:
+        yield str(start)
+        start += 1
 
 def chk_files(directory, manifest):
     """Rewrite manifests to reflect file inconsistencies
@@ -369,8 +379,8 @@ def main():
     print(manifests)
 
     write_files_from_list(manifests,
-                          "C:/Users/localadmin/Downloads/gdc-client.exe",
-                          False)
+                          False,
+                          True)
 
 if __name__ == "__main__":
     main()
