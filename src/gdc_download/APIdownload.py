@@ -413,7 +413,7 @@ def main():
             if re_search.match(cancer_file):
                 manifests.append(path+'/'+cancer_dir+'/'+cancer_file)
 
-    print(len(manifests)
+    print(len(manifests))
 
     write_files_from_list(manifests, False, True)
 
