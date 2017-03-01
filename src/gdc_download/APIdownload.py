@@ -258,10 +258,12 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
 
             for json_post in json_posts:
                 num = next(num_gen)
+
+                name = manifest_path[:-12] + num + '_data.tar.gz'
+                print("Current File:" + name)
+
                 while True:
                     try:
-                        name = manifest_path[:-12] + num + '_data.tar.gz'
-                        print("Current File:" + name)
                         if os.path.isfile(name):
                             if chk_tar(name):
                                 break
@@ -277,7 +279,7 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                                 zip_file.write(content)
                     except AssertionError:
                         continue
-                    except BaseException:
+                    except requests.RequestException:
                         print("Free the internet")
                         time.sleep(60)
                         continue
@@ -411,11 +413,9 @@ def main():
             if re_search.match(cancer_file):
                 manifests.append(path+'/'+cancer_dir+'/'+cancer_file)
 
-    print(manifests)
+    print(len(manifests)
 
-    write_files_from_list(manifests,
-                          False,
-                          True)
+    write_files_from_list(manifests, False, True)
 
 if __name__ == "__main__":
     main()
