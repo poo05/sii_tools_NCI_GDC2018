@@ -267,7 +267,7 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                                 break
                             else:
                                 os.remove(name)
-                                break
+                                assert False
                         post = requests.post("https://gdc-api.nci.nih.gov/data",
                                              stream=True,
                                              json=json_post
@@ -275,7 +275,9 @@ def write_files_from_list(manifest_list, client_path=False, use_api=True):
                         with open(manifest_path[:-12] + num + '_data.tar.gz', 'wb') as zip_file:
                             for content in post.iter_content():
                                 zip_file.write(content)
-                    except:
+                    except AssertionError:
+                        continue
+                    except BaseException:
                         print("Free the internet")
                         time.sleep(60)
                         continue
